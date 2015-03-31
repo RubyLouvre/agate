@@ -23,6 +23,46 @@ http://segmentfault.com/a/1190000002394571
 https://www.npmjs.com/package/nodemon
 https://www.npmjs.com/package/pm2
 
+
+ejs使用
+___________________________
+全局配置
+
+```javascript
+var koa = require('koa');
+var render = require('koa-ejs');
+var path = require('path');
+var app = koa();
+render(app, {
+  root: path.join(__dirname, 'view'), //这是所有模板的目录
+  layout: 'template',  //这是默认的layout
+  viewExt: 'html',     //这是模板的后缀名,只有这类文件才能被匹配当成模板使用
+  cache: false,        //是否缓存,开发时为false,上线应当设为flase
+  debug: true         
+ // locals: locals, 
+ // filters: filters
+});
+```
+render方法使用
+```
+ejs.render(str, options);  //模板名, 配置对象,里面可以重设上面参数
+```
+一个简单例子,某个action的代码
+```
+  router.get('/users', function *(next) {
+     var users = ["司徒正美", "清风火羽", "古道瘦马"]
+     console.log(users)
+     yield this.render('list', {
+         layout: "template2",
+         h2: "这是用户列表页",
+         users: users
+     })
+  })
+```
+详见 http://blog.csdn.net/zhangxin09/article/details/18409119
+
+
+
 对model的字段进行格式化，验证
 https://github.com/Textalk/angular-schema-form
 详看 https://github.com/gcanti/tcomb-form-native https://github.com/joshfire/jsonform
