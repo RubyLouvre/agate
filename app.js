@@ -47,7 +47,7 @@ app.use(router.allowedMethods());
 // make sure it is added after everything else
 app.use(function *(){
 
-  this.body = 'Invalid URL!!!';
+  this.body = 'error! [ '+ this.originalUrl +" ]不存在!"
   // or redirect etc
   // this.redirect('/someotherspot');
 });
