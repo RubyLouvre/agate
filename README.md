@@ -19,4 +19,8 @@ http://se77en.cc/2013/06/27/goodbye-node-forever-hello-pm2-translation/
 
 http://segmentfault.com/a/1190000002394571
 
-koa
+对model的字段进行格式化，验证
+https://github.com/Textalk/angular-schema-form
+详看 https://github.com/gcanti/tcomb-form-native
+
+
