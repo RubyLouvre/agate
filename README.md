@@ -39,8 +39,8 @@ render(app, {
   viewExt: 'html',     //这是模板的后缀名,只有这类文件才能被匹配当成模板使用
   cache: false,        //是否缓存,开发时为false,上线应当设为flase
   debug: true         
- // locals: locals, 
- // filters: filters
+ // locals: locals,   //全局函数
+ // filters: filters  //全局过滤器
 });
 ```
 render方法使用

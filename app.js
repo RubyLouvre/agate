@@ -38,7 +38,13 @@ router
   .get('/users/:id', function *(next) {
      this.body = "这是用户列表2"
   })
-
+  .get('/error', function *(next) {
+     throw "这是错误"
+     this.body = "这是用户列表3"
+  })
+  app.on("error", function (e){
+        log.error('server error', err, ctx);
+  })
 app.use(router.routes())
 app.use(router.allowedMethods());
 
