@@ -23,11 +23,17 @@ router
      //this里包含  request, response, app, req, res, onerror, originalUrl, cookies, accept, matched, captures, params, route
      // this.body = 'Hello World!';
      yield this.render('home', {
-         body: "1111111111111"
+         body: "这是首页"
      })
   })
   .get('/users', function *(next) {
-     this.body = "这是用户列表"
+     var users = ["司徒正美", "清风火羽", "古道瘦马"]
+     console.log(users)
+     yield this.render('list', {
+      //   layout: "template2",
+         body: "这是用户列表页",
+         users: users
+     })
   })
   .get('/users/:id', function *(next) {
      this.body = "这是用户列表2"
@@ -40,6 +46,7 @@ app.use(router.allowedMethods());
 // if no other routing rules match
 // make sure it is added after everything else
 app.use(function *(){
+    console.log(this.onerror())
   this.body = 'Invalid URL!!!';
   // or redirect etc
   // this.redirect('/someotherspot');
