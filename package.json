@@ -1,0 +1,30 @@
+{
+  "name": "agate",
+  "description": "qunar hotel node framework.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RubyLouvre/agate.git"
+  },
+  "main": "app.js",
+  "author": "RuubyLouvre <1669866773@qq.com>",
+  "version": "0.0.1",
+  "keywords": [
+    "koa",
+    "middleware",
+    "router"
+  ],
+  "dependencies": {
+    "koa": "^0.18",
+    "koa-router": "^4.3.0"
+  },
+  "devDependencies": {
+
+  },
+  "scripts": {
+  
+  },
+  "engines": {
+    "node": "> 0.11.4"
+  },
+  "license": "MIT"
+}
