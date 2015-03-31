@@ -19,8 +19,12 @@ http://se77en.cc/2013/06/27/goodbye-node-forever-hello-pm2-translation/
 
 http://segmentfault.com/a/1190000002394571
 
+当我们修改了业务代码，让node服务器自动重启，只监听某一两个文件夹的文件改动或新增删除
+https://www.npmjs.com/package/nodemon
+https://www.npmjs.com/package/pm2
+
 对model的字段进行格式化，验证
 https://github.com/Textalk/angular-schema-form
-详看 https://github.com/gcanti/tcomb-form-native
+详看 https://github.com/gcanti/tcomb-form-native https://github.com/joshfire/jsonform
 
 
