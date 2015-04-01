@@ -90,7 +90,7 @@ Object.keys(routes).forEach(function(key) {
                         var controllerPath = path.join(__dirname, "app", "pages", scontroller, "controller.js")
                         controller = require(controllerPath)
                 } catch (e) {
-                        log4js.getLogger("error").error(controller + " 控制器没有定义" )
+                        log4js.getLogger("error").error(scontroller + " 控制器没有定义" )
         
                 }
 
@@ -101,11 +101,11 @@ Object.keys(routes).forEach(function(key) {
                 if(typeof router[method] === "function"){
                         router[method](rule, action)
                 }else{
-                        log4js.getLogger("error").error(controller + "#" + action + " 对应的路由规则【"+key+"】存在问题")
+                        log4js.getLogger("error").error(scontroller + "#" + saction + " 对应的路由规则【"+key+"】存在问题")
                 }
                 
         } else {
-                log4js.getLogger("error").error(controller + " 控制器没有定义" + action + " 方法")
+                log4js.getLogger("error").error(scontroller + " 控制器没有定义" + saction + " 方法")
         }
 
 })

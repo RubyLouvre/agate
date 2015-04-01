@@ -5,9 +5,9 @@ var routes = {
     controller: "doc",
     action: "index"
   },
-  "get /about": {
+  "get /es6-generators": {
     controller: "doc",
-    action: "about"
+    action: "es6-generators"
   },
   "get /logger": {
     controller: "doc",

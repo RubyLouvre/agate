@@ -8,3 +8,7 @@ exports.index = function *(next) {
 exports.logger =  function *(next) {
    yield this.render("doc/logger")
 }
+exports["es6-generators"] =  function *(next) {
+   yield this.render("doc/es6-generators")
+}
+
