@@ -109,22 +109,22 @@ Object.keys(routes).forEach(function(key) {
 
 
 
-router
-        .get('/users', function*(next) {
-                var users = ["司徒正美", "清风火羽", "古道瘦马"]
-                yield this.render('list', {
-                        layout: "template2",
-                        h2: "这是用户列表页",
-                        users: users
-                })
-        })
-        .get('/users/:id', function*(next) {
-                this.body = "这是用户列表2"
-        })
-        .get('/error', function*(next) {
-                throw 111
-                this.body = "这是用户列表3"
-        })
+//router
+//        .get('/users', function*(next) {
+//                var users = ["司徒正美", "清风火羽", "古道瘦马"]
+//                yield this.render('list', {
+//                        layout: "template2",
+//                        h2: "这是用户列表页",
+//                        users: users
+//                })
+//        })
+//        .get('/users/:id', function*(next) {
+//                this.body = "这是用户列表2"
+//        })
+//        .get('/error', function*(next) {
+//                throw 111
+//                this.body = "这是用户列表3"
+//        })
 app.on("error", function(err, ctx) {
         //https://github.com/koajs/examples/issues/20
         console.log("捕获到错误")
