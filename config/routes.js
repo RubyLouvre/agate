@@ -8,6 +8,10 @@ var routes = {
   "get /about": {
     controller: "doc",
     action: "about"
+  },
+  "get /logger": {
+    controller: "doc",
+    action: "logger"
   }
 }
 

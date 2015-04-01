@@ -5,8 +5,6 @@ exports.index = function *(next) {
    })
 }
 
-exports.about =  function *(next) {
-   yield this.render("doc/about", {
-       body: "这是about"
-   })
+exports.logger =  function *(next) {
+   yield this.render("doc/logger")
 }

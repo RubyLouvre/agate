@@ -2,16 +2,15 @@
 <p>我们通常用console.log来打印各种调试消息,但它受限了控制台那个小小的显示区,
     并且服务器一挂或一关就什么都没有,为了事后进行跟踪,我们需要将日志输出到硬盘上.于是有了各种各样的日志系统.</p>
 <p>在JAVA界里,有一个久负盛名的log4j, 不是一般的好用,因此我们需要重复造轮子,只需将语言改一改,于是就有了log4js.</p>
-
 <p>
- log4js 有三个主要组件：loggers（记录点）, appenders（挂载点）和layouts（布局）。
-这三类组件一起应用，可以让开发人员能够根据日志的类型和级别进行记录，并且能在程序运行时控制log信息输出的格式和往什么地方输出信息。   
+    log4js 有三个主要组件：loggers（记录点）, appenders（挂载点）和layouts（布局）。
+    这三类组件一起应用，可以让开发人员能够根据日志的类型和级别进行记录，并且能在程序运行时控制log信息输出的格式和往什么地方输出信息。   
 </p>
 <p>在agate框架中, log4js的配置是放于config/log4js.json中。</p>
 
-
+<pre class="brush:javascript;gutter:false;toolbar:false">
 { 
-  "appenders": [  //定义各种挂载器
+  "appenders": [  
   // 下面一行应该是用于跟express配合输出web请求url日志的
   {"type": "console", "category": "console"}, 
   // 定义一个日志记录器
@@ -25,3 +24,23 @@
   } ],
   "levels":{ "logInfo": "DEBUG"}        // 设置记录器的默认显示级别，低于这个级别的日志，不会输出
 }
+</pre>
+
+<p>log4js的输出级别6个: trace, debug, info, warn, error, fatal</p>
+<pre class="brush:javascript;gutter:false;toolbar:false">
+logger.trace("Entering cheese testing");
+logger.debug("Got cheese.");
+logger.info("Cheese is Gouda.");
+logger.warn("Cheese is quite smelly.");
+logger.error("Cheese is too ripe!");
+logger.fatal("Cheese was breeding ground for listeria.");
+</pre>
+<p>项目中使用</p>
+<pre class="brush:javascript;gutter:false;toolbar:false">
+ log4js.getLogger("error").error(controller + " 控制器没有定义" )
+</pre>
+<p>更多请参考</p>
+<ul>
+    <li><a href="http://blog.fens.me/nodejs-log4js/">http://blog.fens.me/nodejs-log4js/</a></li>
+    <li><a href="http://blog.sina.com.cn/s/blog_4420014201016l9s.html">http://blog.sina.com.cn/s/blog_4420014201016l9s.html</a></li>
+</ul>
