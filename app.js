@@ -19,51 +19,21 @@ render(app, {
  // filters: filters
 });
 
-router
-  .get('/', function *(next) {
-     //this里包含  request, response, app, req, res, onerror, originalUrl, cookies, accept, matched, captures, params, route
-     // this.body = 'Hello World!';
-     yield this.render('home', {
-         h2: "这是首页"
-     })
-  })
-  .get('/users', function *(next) {
-     var users = ["司徒正美", "清风火羽", "古道瘦马"]
-     console.log(users)
-     yield this.render('list', {
-         layout: "template2",
-         h2: "这是用户列表页",
-         users: users
-     })
-  })
-  .get('/users/:id', function *(next) {
-     this.body = "这是用户列表2"
-  })
-  .get('/error', function *(next) {
-     throw "这是错误"
-     this.body = "这是用户列表3"
-  })
-  app.on("error", function (e){
-      //https://github.com/koajs/examples/issues/20
-        log.error('server error', err, ctx);
-  })
-app.use(router.routes())
-app.use(router.allowedMethods());
 //错误处理
 //https://github.com/koajs/onerror/blob/master/index.js
-function * errors (next) {
+app.use(function *(next) {
   try {
     yield next;
   } catch (err) {
-      console.error("err.stack");
-    
-    // 取得行号
-  	var line = err.stack.split('\n')[1];
-
-  	// parse file path and line
-  	var result = /at\s(.+\s)?\(?(.+)\:([0-9]+)\:[0-9]+/.exec(line);
-  	var path = result[2];
-  	var row = +result[3];
+      if(!(err instanceof Error)){
+          var old = JSON.stringify(err)
+          err = {
+              stack: "内部抛出非Error类型的错误信息，无法追踪其位置",
+              name: "TypeError",
+              message: old,
+              status: 500
+          }
+      }
 
       // delegate
     this.app.emit('error', err, this);
@@ -89,12 +59,43 @@ function * errors (next) {
     yield this.render('error', {
   		name: err.name,
   		message: err.message,
-  		line: row,
   		stack: err.stack
   	});
   }
- }
-  app.use(errors)
+ })
+
+
+
+router
+  .get('/', function *(next) {
+     //this里包含  request, response, app, req, res, onerror, originalUrl, cookies, accept, matched, captures, params, route
+     // this.body = 'Hello World!';
+     yield this.render('home', {
+         h2: "这是首页"
+     })
+  })
+  .get('/users', function *(next) {
+     var users = ["司徒正美", "清风火羽", "古道瘦马"]
+     yield this.render('list', {
+         layout: "template2",
+         h2: "这是用户列表页",
+         users: users
+     })
+  })
+  .get('/users/:id', function *(next) {
+     this.body = "这是用户列表2"
+  })
+  .get('/error', function *(next) {
+     throw 111
+     this.body = "这是用户列表3"
+  })
+  app.on("error", function (err, ctx){
+      //https://github.com/koajs/examples/issues/20
+     console.log("捕获到错误")
+  })
+app.use(router.routes())
+app.use(router.allowedMethods());
+
 // catch all middleware, only land here
 // if no other routing rules match
 // make sure it is added after everything else
