@@ -60,7 +60,7 @@ app.use(function*(next) {
 
 
 var loggerName = 'normal';
-var logjson = require(path.join(__dirname, 'log4js.json'))
+var logjson = require(path.join(__dirname, "config", "log4js.json"))
 app.logger = log4js.configure(logjson);
 app.use(function*(next) {
         var req = this.request,
@@ -75,8 +75,6 @@ app.use(function*(next) {
 var routes = require(path.join(__dirname, "config", "routes.js"))
         //缓存所有控制器
 var controllers = Object.create(null)
-        //参考rails3 的目录结构 https://ruby-china.org/topics/2432
-        // http://rails.pixnet.net/blog/post/22952893-%E6%B7%B1%E5%85%A5%E6%B7%BA%E5%87%BA-ror-(3)---%E7%9B%AE%E9%8C%84%E7%B5%90%E6%A7%8B
 Object.keys(routes).forEach(function(key) {
         var val = routes[key]
         var arr = key.split(" ")
@@ -92,53 +90,37 @@ Object.keys(routes).forEach(function(key) {
                         var controllerPath = path.join(__dirname, "app", "pages", scontroller, "controller.js")
                         controller = require(controllerPath)
                 } catch (e) {
-                        console.log(e)
+                        log4js.getLogger("error").error(controller + " 控制器没有定义" )
+        
                 }
-
 
         }
         var action = controller[saction]
         console.log(action + "")
         if (typeof action === "function") {
-                router[method](rule, action)
+                if(typeof router[method] === "function"){
+                        router[method](rule, action)
+                }else{
+                        log4js.getLogger("error").error(controller + "#" + action + " 对应的路由规则【"+key+"】存在问题")
+                }
+                
         } else {
-
+                log4js.getLogger("error").error(controller + " 控制器没有定义" + action + " 方法")
         }
 
 })
 
+app.use(router.routes())
+app.use(router.allowedMethods());
 
-
-//router
-//        .get('/users', function*(next) {
-//                var users = ["司徒正美", "清风火羽", "古道瘦马"]
-//                yield this.render('list', {
-//                        layout: "template2",
-//                        h2: "这是用户列表页",
-//                        users: users
-//                })
-//        })
-//        .get('/users/:id', function*(next) {
-//                this.body = "这是用户列表2"
-//        })
-//        .get('/error', function*(next) {
-//                throw 111
-//                this.body = "这是用户列表3"
-//        })
 app.on("error", function(err, ctx) {
         //https://github.com/koajs/examples/issues/20
         console.log("捕获到错误")
 })
-app.use(router.routes())
-app.use(router.allowedMethods());
-// catch all middleware, only land here
-// if no other routing rules match
-// make sure it is added after everything else
-app.use(function*() {
 
+
+app.use(function*() {
         this.body = 'error! [ ' + this.originalUrl + " ]不存在!"
-                // or redirect etc
-                // this.redirect('/someotherspot');
 });
 app.listen(3000);
 console.log("已经启动http://localhost:3000/")
