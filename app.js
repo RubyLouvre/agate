@@ -8,7 +8,7 @@ var log4js = require('log4js');
 var render = require('koa-ejs');
 render(app, {
         root: path.join(__dirname, 'app', "pages"),
-        layout: 'layout/template',
+        layout: '../layout/template',
         viewExt: 'html',
         cache: false,
         debug: true

@@ -1,4 +1,4 @@
-exports.index = function *() {
+exports.index = function () {
    yeild *this.render("doc/index")
 };
 
