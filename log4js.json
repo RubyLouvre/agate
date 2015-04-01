@@ -1,0 +1,31 @@
+{
+    "appenders": [
+        { "type" : "console" },
+        {
+            "type": "dateFile",
+            "filename": "logs/access.log",
+            "pattern": "-yyyy-MM-dd",
+            "category": "normal",
+            "level": "LOG"
+        },
+        {
+            "type": "file",
+            "filename": "logs/error.log",
+            "maxLogSize": 20480,
+            "backups": 3,
+            "category": "error"
+        },
+        {
+            "type": "file",
+            "filename": "logs/record.log",
+            "maxLogSize": 20480,
+            "backups": 3,
+            "category": "record"
+        }
+    ],
+    "replaceConsole": true,
+    "levels": {
+        "error": "error",
+        "record": "trace"
+    }
+}

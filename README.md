@@ -1,4 +1,3 @@
-no
 
 
 node0.12.1还没有默认开启generator ,如果你有一个app.js,以前是用node app运行它,现在想玩koa,则需要node --harmony app
