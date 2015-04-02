@@ -219,12 +219,566 @@ console.log( v ); // 仍然是 `5`, 而不是 `6` </pre>
 
 <p>当然有很多的场景能发挥生成器的这些特性了，这篇文章只是抛砖引玉，我们将继续深入挖掘生成器的魔力！</p>
 
-<p>当你在最新的 Chrome nightly 或 canary 版，或 Firefox nightly版，甚至在 v0.11+ 版本的 node （带 &#8211;harmony 开启 ES6 功能）中运行了以上这些代码片段后，我们可能会产生以下疑问：</p>
+<p>当你在最新的 Chrome nightly 或 canary 版，或 Firefox nightly版，甚至在 v0.11+ 版本的 node （带 &#8211;harmony 开启 ES6 功能）中运行了以上这些代码片段</p>
+
+<h1>错误处理</h1>
+
+<p>ES6 中生成器的其中一个强大的特点就是：函数内部的代码编写风格是同步的，即使外部的迭代控制过程可能是异步的。</p>
+
+<p>也就是说，我们可以简单地对错误进行处理，类似我们熟悉的 <code class='language-javascript'>try..catch</code> 语法，举个栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function *foo() {
+    try {
+        var x = yield 3;
+        console.log( "x: " + x ); // 如果出错，这里可能永远不会执行
+    }
+    catch (err) {
+        console.log( "Error: " + err );
+    }
+}</pre>
+
+<p>即使这个生成器可能会在 <code class='language-javascript'>yield 3</code> 处中断，当接收到外部传入的错误时，<code class='language-javascript'>try..catch</code> 将会捕获到。</p>
+
+<p>具体一个错误是怎样传入生成器的呢，举个栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">var it = foo();
+
+var res = it.next(); // { value:3, done:false }
+
+// 我们在这里不调用 it.next() 传值进去，而是触发一个错误
+it.throw( "Oops!" ); // Error: Oops!</pre>
+
+<p>我们可以使用 <code class='language-javascript'>throw()</code> 方法产生错误传进生成器中，那么在生成器中断的地方，即 <code class='language-javascript'>yield 3</code> 处会产生错误，然后被 <code class='language-javascript'>try..catch</code> 捕获。</p>
+
+<p>注意：如果我们使用 <code class='language-javascript'>throw()</code> 方法产生一个错误传进生成器中，但没有对应的 <code class='language-javascript'>try..catch</code> 对错误进行捕获的话，这个错误将会被传出去，外部如果不对错误进行捕获的话，则会抛出异常：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">
+function *foo() { }
+
+var it = foo();
+// 在外部进行捕获
+try {
+    it.throw( "Oops!" );
+}
+catch (err) {
+    console.log( "Error: " + err ); // Error: Oops!
+}</pre>
+
+<p>当然，我们也可以进行反方向的错误捕获：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function *foo() {
+    var x = yield 3;
+    var y = x.toUpperCase(); // 若 x 不是字符串的话，将抛出TypeError 错误
+    yield y;
+}
+
+var it = foo();
+
+it.next(); // { value:3, done:false }
+
+try {
+    it.next( 42 ); // `42` 是数字没有 `toUpperCase()` 方法，所以会出错
+}
+catch (err) {
+    console.log( err ); // 捕获到 TypeError 错误
+}</pre>
+
+<h1>生成器委托</h1>
+
+<p>另一个我们想做的可能是在一个生成器中调用另一个生成器。</p>
+
+<p>我并不是指在一个生成器中初始化另一个生成器，而是说我们可以将一个生成器的迭代器控制交给另一个生成器。</p>
+
+<p>为了实现委托，我们需要用到 <code class='language-javascript'>yield</code> 关键字的另一种形式：<code class='language-javascript'>yield *</code>，举个栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function *foo() {
+    yield 3;
+    yield 4;
+}
+
+function *bar() {
+    yield 1;
+    yield 2;
+    yield *foo(); // `yield *` 将迭代器控制委托给了 `foo()`
+    yield 5;
+}
+
+for (var v of bar()) {
+    console.log( v );
+}
+// 1 2 3 4 5</pre>
+
+<p>以上这段代码应该通俗易懂：当生成器 <code class='language-javascript'>bar()</code> 迭代到 <code class='language-javascript'>yield 2</code> 时，先将控制权交给了另一个生成器 <code class='language-javascript'>foo()</code>迭代完后再将控制权收回，继续进行迭代。</p>
+
+<p>这里使用了 <code class='language-javascript'>for..of</code> 循环进行示例，正如在基础篇我们知道 <code class='language-javascript'>for..of</code> 循环中没有暴露出 <code class='language-javascript'>next()</code> 方法来传递值到生成器中，所以我们可以用手动的方式：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function *foo() {
+    var z = yield 3;
+    var w = yield 4;
+    console.log( "z: " + z + ", w: " + w );
+}
+
+function *bar() {
+    var x = yield 1;
+    var y = yield 2;
+    yield *foo(); // `yield *` 将迭代器控制委托给了 `foo()`
+    var v = yield 5;
+    console.log( "x: " + x + ", y: " + y + ", v: " + v );
+}
+
+var it = bar();
+
+it.next();      // { value:1, done:false }
+it.next( "X" ); // { value:2, done:false }
+it.next( "Y" ); // { value:3, done:false }
+it.next( "Z" ); // { value:4, done:false }
+it.next( "W" ); // { value:5, done:false }
+// z: Z, w: W
+
+it.next( "V" ); // { value:undefined, done:true }
+// x: X, y: Y, v: V</pre>
+
+<p>尽管我们在这里只展示了一层的委托关系，但具体场景中我们当然可以使用多层的嵌套。</p>
+
+<p>一个 <code class='language-javascript'>yield *</code> 技巧是，我们可以从被委托的生成器（比如示例中的 <code class='language-javascript'>foo()</code>） 获取到返回值，举个栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function *foo() {
+    yield 2;
+    yield 3;
+    return "foo"; // 返回一个值给 `yield*` 表达式
+}
+
+function *bar() {
+    yield 1;
+    var v = yield *foo();
+    console.log( "v: " + v );
+    yield 4;
+}
+
+var it = bar();
+
+it.next(); // { value:1, done:false }
+it.next(); // { value:2, done:false }
+it.next(); // { value:3, done:false }
+it.next(); // "v: foo"   { value:4, done:false } 注意：在这里获取到了返回的值
+it.next(); // { value:undefined, done:true }</pre>
+
+<p><code class='language-javascript'>yield *foo()</code> 得到了 <code class='language-javascript'>bar()</code> 的控制权，完成了自己的迭代操作后，返回了一个 <code class='language-javascript'>v: foo</code> 值 给<code class='language-javascript'>bar()</code> ，然后 <code class='language-javascript'>bar()</code> 再继续迭代下去。</p>
+
+<p><code class='language-javascript'>yield</code> 和 <code class='language-javascript'>yield *</code> 表达式的一个有趣的区别是：在 <code class='language-javascript'>yield</code> 中，返回值在 <code class='language-javascript'>next()</code> 中传入的，而在 <code class='language-javascript'>yield *</code> 中，返回值是在 <code class='language-javascript'>return</code> 中传入的。</p>
+
+<p>此外，我们也可以在委托的生成器中进行双向的错误绑定，举个栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function *foo() {
+    try {
+        yield 2;
+    }
+    catch (err) {
+        console.log( "foo caught: " + err );
+    }
+
+    yield; // 中断
+
+    // 现在抛出另一个错误
+    throw "Oops!";
+}
+
+function *bar() {
+    yield 1;
+    try {
+        yield *foo();
+    }
+    catch (err) {
+        console.log( "bar caught: " + err );
+    }
+}
+
+var it = bar();
+
+it.next(); // { value:1, done:false }
+it.next(); // { value:2, done:false }
+
+it.throw( "Uh oh!" ); // 将会在 `foo()` 内部捕获
+// foo caught: Uh oh!
+
+it.next(); // { value:undefined, done:true }  --&gt; 这里没有错误
+// bar caught: Oops!</pre>
+
+<p><code class='language-javascript'>throw( "Uh oh!" )</code> 在代理给 <code class='language-javascript'>foo()</code> 的过程中，抛了个错误进去，所以错误在 <code class='language-javascript'>foo()</code> 中被捕获。</p>
+
+<p>同理，<code class='language-javascript'>throw "Oops!"</code>  在 <code class='language-javascript'>foo()</code> 内部抛出的错误，将会传回给 <code class='language-javascript'>bar()</code> 后，被 <code class='language-javascript'>bar()</code> 中的 <code class='language-javascript'>try..catch</code> 捕获到。</p>
+
+<h1>总结</h1>
+
+<p>生成器有着同步方式的编写语法，意味着我么可以使用 <code class='language-javascript'>try..catch</code> 在 <code class='language-javascript'>yield</code> 表达式中进行错误处理。</p>
+
+<p>生成器迭代器中也有一个 <code class='language-javascript'>throw()</code> 方法用于在中断期间向生成器内部传入一个错误，这个错误能被生成器内部的 <code class='language-javascript'>try..catch</code> 捕获。</p>
+
+<p><code class='language-javascript'>yield *</code> 允许我们将迭代器的控制权从当前的生成器中委托给另一个生成器。好处是 <code class='language-javascript'>yield *</code> 扮演了在生成器间传递消息和错误的角色。</p>
+
+<p>了解了这么多，还有一个很重要的问题没有解决：</p>
+
+<p>怎么异步地使用生成器呢？</p>
+
+<p>关键是要实现这么一个机制：在异步环境中，当迭代器的 <code class='language-javascript'>next()</code> 方法被调用，我们需要定位到生成器中断的地方重新启动。</p>
+
+<p>生成器提供了同步方式编写的代码风格，这就允许我们隐藏异步的实现细节。</p>
+
+<p>我们就可以用一种非常自然的方式来表达程序的执行流程，避免了同时处理异步代码的语法和陷阱。</p>
+
+<p>换句话说，我们利用生成器从内到外、从外到内双向传值的特点，将不同的值的处理交给了不同的生成器逻辑，只需要关心获取到特定的值进行某种操作，而无需关心特定的值如何产生（通过<code class='language-javascript'>netx()</code> 将值的产生逻辑委托出去）。</p>
+
+<p>这么一来，异步处理的优点以及易读的代码结合到一起，就加强了我们程序的可维护性。</p>
+
+<h1>最简单的异步</h1>
+
+<p>举个栗子，假定我们已经有了以下代码：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function makeAjaxCall(url,cb) {
+    // 执行一个 ajax 请求
+    // 请求完成后执行 `cb(result)` 
+}
+
+makeAjaxCall( "http://some.url.1", function(result1){
+    var data = JSON.parse( result1 );
+
+    makeAjaxCall( "http://some.url.2/?id=" + data.id, function(result2){
+        var resp = JSON.parse( result2 );
+        console.log( "我们请求到的数据是: " + resp.value );
+    });
+} );</pre>
+
+<p>使用简单的生成器来表达的话，就像这样：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function request(url) {
+   // 调用这个普通函数来隐藏异步处理的细节
+   // 使用 `it.next()` 来恢复调用这个普通函数的生成器函数的迭代器
+    makeAjaxCall( url, function(response){
+        // 异步获取到数据后，给生成器发送 `response` 信号
+        it.next( response );
+    } );
+    // 注意: 这里没有返回值
+}
+
+function *main() {
+    var result1 = yield request( "http://some.url.1" );
+    var data = JSON.parse( result1 );
+
+    var result2 = yield request( "http://some.url.2?id=" + data.id );
+    var resp = JSON.parse( result2 );
+    console.log( "The value you asked for: " + resp.value );
+}
+
+var it = main();
+it.next(); // 开始迭代</pre>
+
+<p><code class='language-javascript'>request()</code> 这个工具函数只是将我们的异步请求数据的代码进行了封装，需要注意的是在回调函数中调用了生成器的 <code class='language-javascript'>next()</code> 方法。</p>
+
+<p>当我们使用 <code class='language-javascript'>var it = main();</code> 创建了一个迭代器后，紧接着使用 <code class='language-javascript'>it.next();</code> 开始迭代，这时候遇到第一个 <code class='language-javascript'>yield</code> 中断了生成器，转而执行 <code class='language-javascript'>request( "http://some.url.1" )</code></p>
+
+<p>当 <code class='language-javascript'>request( "http://some.url.1" )</code> 异步获取到数据后，在回调函数中调用 <code class='language-javascript'>it.next(response)</code> 将 <code class='language-javascript'>response</code> 传回给生成器刚刚中断的地方，生成器将继续迭代。</p>
+
+<p>这里的亮点就是，我们在生成器中无需关心异步请求的数据如何获取，我们只知道调用了  <code class='language-javascript'>request()</code> 后，当需要的数据获取到了，就会通知生成器继续迭代。</p>
+
+<p>这么一来在生成器中我们使用同步方式的编写风格，其实我们获取到了异步数据！</p>
+
+<p>同理，当我们继续调用 <code class='language-javascript'>it.next()</code> 时，会遇到第二个 <code class='language-javascript'>yield</code> 中断迭代，发出第二个请求 <code class='language-javascript'>yield request( "http://some.url.2?id=" + data.id )</code> 异步获取到数据后再恢复迭代，我们依旧不用关心异步获取数据的细节了，多爽！</p>
+
+<p>以上这段代码中，<code class='language-javascript'>request()</code> 请求的是异步 AJAX 请求，但如果我们后续改变程序给 AJAX 设置了缓存了，获取数据会先从缓存中获取，这时候没有执行真正的 AJAX 请求就不能在回调函数中调用 <code class='language-javascript'>it.next(response)</code> 来恢复生成器的中断了啊！</p>
+
+<p>没关系，我们可以使用一个小技巧来解决这个问题，举个栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">// 给 AJAX 设置缓存
+var cache = {};
+
+function request(url) {
+    // 请求已被缓存
+    if (cache[url]) {
+        // 使用 setTimeout 来模拟异步操作
+        setTimeout( function(){
+            it.next( cache[url] );
+        }, 0 );
+    }
+    // 请求未被缓存，发出真正的请求
+    else {
+        makeAjaxCall( url, function(resp){
+            cache[url] = resp;
+            it.next( resp );
+        } );
+    }
+}</pre>
+
+<p>看，当我们给我们的程序添加了 AJAX 缓存机制甚至其他异步操作的优化时，我们只改变了  <code class='language-javascript'>request()</code> 这个工具函数的逻辑，而无需改动调用这个工具函数获取数据的生成器：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">var result1 = yield request( "http://some.url.1" );
+var data = JSON.parse( result1 );
+..</pre>
+
+<p>在生成器中，我们还是像以前一样调用 <code class='language-javascript'>request()</code> 就能获取到需要的异步数据，无需关心获取数据的细节实现！</p>
+
+<p>这就是将异步操作当做一个细节实现抽象出来后展现出的魔力了！</p>
+
+<h1>更好的异步</h1>
+
+<p>上面介绍的异步方案对于简单的异步生成器来说工作良好，但用途有限，我们需要一个更强大的异步方案：使用 Promises.</p>
+
+<p>如果你对 ES6 Promises 有迷惑的话，我建议你先读 <a href="http://blog.getify.com/promises-part-1/">我写的介绍 Promises 的文章</a></p>
+
+<p>我们的代码目前有个严重的问题：回调多了会产生多重嵌套（即回调地狱）。</p>
+
+<p>此外，我们目前还缺乏的东西有：</p>
 
 <ol>
-<li>怎么进行错误处理呢？</li>
-<li>一个生成器怎么调用另一个生成器呢？</li>
-<li>怎么异步地使用生成器呢？</li>
+<li><p>清晰的错误处理逻辑。我们使用 AJAX 的回调可能会检测到一个错误，然后使用 <code class='language-javascript'>it.throw()</code> 将错误传回给生成器，在生成器中则使用 <code class='language-javascript'>try..catch</code> 来捕获错误。
+一来我们需要猜测我们可能发生错误且手动添加对应的错误处理函数，二来我们的错误处理代码没法重复使用。</p></li>
+<li><p>如果 <code class='language-javascript'>makeAjaxCall()</code> 函数不受我们控制，调用了多次回调的话，也会多次触发回调中的 <code class='language-javascript'>it.next()</code> ，生成器就会变得非常混乱。</p>
+
+<p>处理和阻止这种问题需要大量的手动工作，也非常不方便。</p></li>
+<li><p>有时候我们需要 『并行地』执行不只一个任务（比如同时触发两个 AJAX 请求）。而生成器中的 <code class='language-javascript'>yield</code> 并不支持两个或多个同时进行。</p></li>
 </ol>
 
-http://www.html-js.com/article/2293
+<p>以上这些问题都可以用手动编写代码的方式来解决，但谁会想每次都重新编写类似的重复的代码呢？</p>
+
+<p>我们需要一个更好的可信任、可重复使用的方案来支持我们基于生成器编写异步的代码。</p>
+
+<p>怎么实现？使用 Promises ！</p>
+
+<p>我们将原来的代码加入 Promises 的特性：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function request(url) {
+    // 注意: 这里返回的是一个 promise
+    return new Promise( function(resolve,reject){
+        makeAjaxCall( url, resolve );
+    } );
+}</pre>
+
+<p><code class='language-javascript'>request()</code> 函数中创建了一个 promise 实例，一旦 AJAX 请求完成，这个实例将会被 <code class='language-javascript'>resolved</code>。</p>
+
+<p>我们接着将这个实例返回，这样它就能够被 <code class='language-javascript'>yield</code> 了。</p>
+
+<p>接下来我们需要一个工具来控制我们生成器的迭代器，接收返回的 promise 实例，然后再通过 <code class='language-javascript'>next()</code> 来恢复生成器的中断：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">// 执行异步的生成器
+// 注意: 这是简化的版本，没有处理错误
+function runGenerator(g) {
+    // 注意：我们使用 `g()` 自动初始化了迭代器
+    var it = g(), ret;
+
+    // 异步地迭代
+    (function iterate(val){
+        ret = it.next( val );
+
+        // 迭代未完成
+        if (!ret.done) {
+            // 判断是否为 promise 对象，如果没有 `then()` 方法则不是
+            if ("then" in ret.value) {
+                // 等待 promise 返回
+                ret.value.then( iterate );
+            }
+            // 如果不是 promise 实例，则说明直接返回了一个值
+            else {
+                // 使用 `setTimeout` 模拟异步操作
+                setTimeout( function(){
+                    iterate( ret.value );
+                }, 0 );
+            }
+        }
+    })();
+}</pre>
+
+<p>注意：我们在 <code class='language-javascript'>runGenerator()</code> 中先生成了一个迭代器 <code class='language-javascript'>var it = g()</code>，然后我们会执行这个迭代器直到它完成(<code class='language-javascript'>done: true</code>)。</p>
+
+<p>接着我们就可以使用这个 <code class='language-javascript'>runGenerator()</code> 了：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">runGenerator( function *main(){
+    var result1 = yield request( "http://some.url.1" );
+    var data = JSON.parse( result1 );
+
+    var result2 = yield request( "http://some.url.2?id=" + data.id );
+    var resp = JSON.parse( result2 );
+    console.log( "你请求的数据是: " + resp.value );
+} );</pre>
+
+<p>我们通过生成不同的 promise 实例，分别对这些实例进行 <code class='language-javascript'>yield</code>，不同的实例等待自己的 promise 被 <code class='language-javascript'>resolve</code> 后再执行对应的操作。</p>
+
+<p>这么一来，我们只需要同时生成不同的 promise 实例，就可以『并行地』执行不只一个任务（比如同时触发两个 AJAX 请求）了。</p>
+
+<p>既然我们使用了 promises 来管理生成器中处理异步的代码，我们就解决了只有在回调中才能实现的功能，这就避免了回调嵌套了。</p>
+
+<p>使用 Generotos + Promises 的优点是：</p>
+
+<ol>
+<li><p>我们可以使用内建的错误处理机制。虽然这没有在上面的代码片段中展示出来，但其实很简单：</p>
+
+<p>监听 promise 中的错误，使用 <code class='language-javascript'>it.throw()</code> 把错误抛出，然后在生成器中使用 <code class='language-javascript'>try..catch</code> 进行捕获和处理即可。</p></li>
+<li><p>我们可以使用到 Promises 提供的 <a href="http://blog.getify.com/promises-part-2/#uninversion">control/trustability</a> 特性。</p></li>
+<li><p>Promises 提供了大量处理多并行且复杂的任务的特性。</p>
+
+<p>举个栗子：<code class='language-javascript'>yield Promise.all([ .. ])</code> 方法接收一组 promise 组成的数组作为参数，然后 <code class='language-javascript'>yield</code> 一个 promise 提供给生成器处理，这个 promise 会等待数组里所有 promise 完成。当我们得到 <code class='language-javascript'>yield</code> 后的 promise 时，说明传进去的数组中的所有 promise 都已经完成，且是按照他们被传入的顺序完成的。</p></li>
+</ol>
+
+<p>首先，我们体验一下错误处理：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">// 假设1: `makeAjaxCall(..)` 第一个参数判断是否有错误产生
+// 假设2: `runGenerator(..)` 能捕获并处理错误
+
+function request(url) {
+    return new Promise( function(resolve,reject){
+        makeAjaxCall( url, function(err,text){
+            // 如果出错，则 reject 这个 promise
+            if (err) reject( err );
+            // 否则，resolve 这个 promise
+            else resolve( text );
+        } );
+    } );
+}
+
+runGenerator( function *main(){
+    // 捕获第一个请求的错误
+    try {
+        var result1 = yield request( "http://some.url.1" );
+    }
+    catch (err) {
+        console.log( "Error: " + err );
+        return;
+    }
+    var data = JSON.parse( result1 );
+
+    // 捕获第二个请求的错误
+    try {
+        var result2 = yield request( "http://some.url.2?id=" + data.id );
+    } catch (err) {
+        console.log( "Error: " + err );
+        return;
+    }
+    var resp = JSON.parse( result2 );
+    console.log( "你请求的数据是: " + resp.value );
+} );</pre>
+
+<p>如果一个 promise 被 <code class='language-javascript'>reject</code> 或遇到其他错误的话，将使用 <code class='language-javascript'>it.throw()</code> (代码片段中没有展示出来)抛出一个生成器的错误，这个错误能被 <code class='language-javascript'>try..catch</code> 捕获。</p>
+
+<p>再举个使用 Promises 管理更复杂的异步操作的栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function request(url) {
+    return new Promise( function(resolve,reject){
+        makeAjaxCall( url, resolve );
+    } )
+    // 对 promise 返回的字符串进行后处理操作
+    .then( function(text){
+        // 是否为一个重定向链接
+        if (/^https?:\/\/.+/.test( text )) {
+            // 是的话对向新链接发送请求
+            return request( text );
+        }
+        // 否则，返回字符串
+        else {
+            return text;
+        }
+    } );
+}
+
+runGenerator( function *main(){
+    var search_terms = yield Promise.all( [
+        request( "http://some.url.1" ),
+        request( "http://some.url.2" ),
+        request( "http://some.url.3" )
+    ] );
+
+    var search_results = yield request(
+        "http://some.url.4?search=" + search_terms.join( "+" )
+    );
+    var resp = JSON.parse( search_results );
+
+    console.log( "Search results: " + resp.value );
+} );
+</pre>
+
+<p><code class='language-javascript'>Promise.all([ .. ])</code> 构造了一个 promise ，等待数组中三个 promise 的完成，这个 promise 会被 <code class='language-javascript'>yield</code> 给 <code class='language-javascript'>runGenerator()</code> 生成器，然后这个生成器就可以恢复迭代。</p>
+
+<h1>使用其他的 Promise 类库</h1>
+
+<p>在上面的代码片段中，我们自己编写了 <code class='language-javascript'>runGenerator()</code> 函数来提供 Generators + Promises 的功能，其实我们也可以使用社区里优秀的类库，举几个栗子： <a href="https://github.com/kriskowal/q">Q</a> 、<a href="https://github.com/visionmedia/co">Co</a>、 <a href="https://github.com/getify/asynquence/tree/master/contrib#runner-plugin">asynquence</a> 等</p>
+
+<p>接下来我会简要地介绍下 <a href="http://github.com/getify/asynquence">asynquence</a> 中的 <a href="https://github.com/getify/asynquence/tree/master/contrib#runner-plugin">runner插件</a> 。如果你感兴趣的话，可以阅读我写的<a href="http://davidwalsh.name/asynquence-part-1/">两篇深入理解 asynquence 的博文</a>。</p>
+
+<p>首先，asynquence 提供了回调函数中错误为第一参数的编写风格(error-first style)，举个栗子：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">function request(url) {
+    return ASQ( function(done){
+        // 传进一个以错误为第一参数的回调函数
+        makeAjaxCall( url, done.errfcb );
+    } );
+}</pre>
+
+<p>接着，asynquence 的 runner 插件会接收一个生成器作为参数，这个生成器可以处理传入的数据处理后再传出来，而所有的的错误会自动地传递：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">// 我们使用 `getSomeValues()` 来产生一组 promise，并链式地进行异步操作
+getSomeValues()
+
+// 现在使用一个生成器来处理接收到的数据
+.runner( function*(token){
+    var value1 = token.messages[0];
+    var value2 = token.messages[1];
+    var value3 = token.messages[2];
+
+    // 并行地执行三个 AJAX 请求
+    // 注意: `ASQ().all(..)` 就像之前提过的 `Promise.all(..)`
+    var msgs = yield ASQ().all(
+        request( "http://some.url.1?v=" + value1 ),
+        request( "http://some.url.2?v=" + value2 ),
+        request( "http://some.url.3?v=" + value3 )
+    );
+
+    // 当三个请求都执行完毕后，进入下一步
+    yield (msgs[0] + msgs[1] + msgs[2]);
+} )
+
+// 现在使用前面的生成器返回的值作为参数继续发送 AJAX 请求
+.seq( function(msg){
+    return request( "http://some.url.4?msg=" + msg );
+} )
+
+// 完成了一系列请求后，我们就获取到了想要的数据
+.val( function(result){
+    console.log( result ); // 获取数据成功!
+} )
+
+// 如果产生错误，则抛出
+.or( function(err) {
+    console.log( "Error: " + err );
+} );</pre>
+
+<h1>ES7 async</h1>
+
+<p>在 ES7 草案中有一个提议，建议采用另一种新的 <code class='language-javascript'>async</code> 函数类型。</p>
+
+<p>使用这种函数，我们可以向外部发出 promises，然后使用 <code class='language-javascript'>async</code> 函数自动地将这些 promises 连接起来，当 promises 完成的时候，就会恢复 <code class='language-javascript'>async</code> 函数自己的中断（不需要在繁杂的迭代器中手动恢复）。</p>
+
+<p>这个提议如果被采纳的话，可能会像这样：</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">async function main() {
+    var result1 = await request( "http://some.url.1" );
+    var data = JSON.parse( result1 );
+
+    var result2 = await request( "http://some.url.2?id=" + data.id );
+    var resp = JSON.parse( result2 );
+    console.log( "The value you asked for: " + resp.value );
+}
+
+main();</pre>
+
+<p>我们使用 <code class='language-javascript'>async</code> 声明了这种异步函数类型，然后使用 <code class='language-javascript'>main()</code> 直接调用这个函数，而不用像使用 <code class='language-javascript'>runGenerator()</code> 或 <code class='language-javascript'>ASQ().runner()</code> 一样进行包装。</p>
+
+<p>此外，我们没有使用 <code class='language-javascript'>yield</code> 关键字，而是使用了新的 <code class='language-javascript'>await</code> 关键字来声明等待 <code class='language-javascript'>await</code> 后面的 promise 的完成。</p>
+
+<h1>总结</h1>
+
+<p>一言以蔽之：Generators + Promises 的组合，强大且优雅地用同步编码风格实现了复杂的异步控制操作。</p>
+
+<p>使用一些简单的工具类库，比如上面提到的 <a href="https://github.com/kriskowal/q">Q</a> 、<a href="https://github.com/visionmedia/co">Co</a>、 <a href="https://github.com/getify/asynquence/tree/master/contrib#runner-plugin">asynquence</a> 等，我们可以更方便地实现这些操作。</p>
+
+<p>可以预见在不久的将来，当 ES7+ 发布的时候，我们使用 <code class='language-javascript'>async</code> 函数甚至可以无需使用一些类库支撑就可以实现原生的异步生成器了！</p>
+
+<p>(译注：本文是第三篇文章，其实还有最后一篇是讲述并发式生成器的实现思路，涉及到 CSP 的相关概念，原文中引用了比较多的东西，读起来比较晦涩难懂，怕翻译出来与原文作者想要表达的东西相差太远，就先放一边了，感兴趣的可以直接<a href="http://davidwalsh.name/concurrent-generators">查看原文</a>。
+欢迎大牛接力)</p>
+
