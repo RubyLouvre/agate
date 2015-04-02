@@ -1,0 +1,30 @@
+<h2>cookie</h2>
+<p>koa已经整合了cookie功能,是基于<a href="https://github.com/pillarjs/cookies">https://github.com/pillarjs/cookies</a>这个模块实现的</p>
+<p>我们可以在控制器上这样访问的所有cookies</p>
+<pre class="brush:javascript;gutter:false;toolbar:false">
+//pages/doc/controller.js
+exports.cookie = function *(next) {
+   var cookie = this.request.header.cookie
+   yield this.render("doc/index", {
+       cookie: cookie
+   })
+}
+</pre>
+<p>设置cookie</p>
+<pre class="brush:javascript;gutter:false;toolbar:false">
+exports.cookie = function *(next) {
+    this.cookies.set('aaa', 'bbb' ); 
+    this.cookies.set('xxx','yyy' );
+   yield this.render("doc/index")
+}
+</pre>
+<p>获取cookie</p>
+<pre class="brush:javascript;gutter:false;toolbar:false">
+exports.cookie = function *(next) {
+   var a = this.cookies.get('aaa')
+   yield this.render("doc/index",{
+      aaa: a
+   })
+}
+</pre>
+<%= cookie %>

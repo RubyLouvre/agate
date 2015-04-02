@@ -12,7 +12,12 @@ var routes = {
   "get /logger": {
     controller: "doc",
     action: "logger"
+  },
+  "get /cookie": {
+    controller: "doc",
+    action: "cookie"
   }
+  
 }
 
 module.exports = routes

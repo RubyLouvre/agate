@@ -8,6 +8,15 @@ exports.index = function *(next) {
 exports.logger =  function *(next) {
    yield this.render("doc/logger")
 }
+
+exports.cookie =  function *(next) {
+    this.cookies.set('aaa', 'bbb' ); 
+    this.cookies.set('xxx','yyy' );
+    yield this.render("doc/cookie",{
+       cookie: "author=司徒正美"
+   })
+}
+
 exports["es6-generators"] =  function *(next) {
    yield this.render("doc/es6-generators")
 }
