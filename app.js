@@ -6,6 +6,8 @@ var http = require("http")
 var router = require('koa-router')();
 var log4js = require('log4js');
 var render = require('koa-ejs');
+
+app.use(require('koa-static')("public")) //处理js, css, jpg, png , ttf, woff， eot, otf, svg等静态资源
 render(app, {
         root: path.join(__dirname, 'app', "pages"),
         layout: '../layout/template',
@@ -65,7 +67,8 @@ app.logger = log4js.configure(logjson);
 app.use(function*(next) {
         var req = this.request,
                 header = req.header
-        log4js.getLogger("normal").info([req.ip, req.method, req.url, header['user-agent']].join(" "))
+                browser =   header["user-agent"].replace(/\([^)]+\)/g, " ").replace(/\s+/g, " ") //去掉着小括号里面的内容
+        log4js.getLogger("normal").info([ req.method, req.url, browser].join(" "))
         yield next;
 })
 
