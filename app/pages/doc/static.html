@@ -1,4 +1,14 @@
 <h2>静态资源处理</h2>
-<p>用法与express的差不多，<a  href="http://expressjs.com/starter/static-files.html">http://expressjs.com/starter/static-files.html</a>，
-其实设置一个参数就行，见app.js，直接<b>app.use(require('koa-static')("public")) </b>一行搞定。以后静态资源分门别类放到public目录下就行。
-</p>
+
+<p>两个方案,<a href="https://github.com/koajs/static">static</a>与<a href="https://github.com/koajs/static-cache">static-cache</a></p>
+<p>目前使用static-cache。</p>
+
+<pre class="brush:javascript;gutter:false;toolbar:false">
+var path = require('path')
+var staticCache = require('koa-static-cache')
+
+app.use(staticCache(path.join(__dirname, 'public'), {
+  maxAge: 365 * 24 * 60 * 60
+}))
+</pre>
+<P>以后静态资源分门别类放到public目录下就行。</P>

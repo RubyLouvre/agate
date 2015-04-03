@@ -24,3 +24,7 @@ exports["es6-generators"] =  function *(next) {
 exports["favicon"] =  function *(next) {
    yield this.render("doc/favicon")
 }
+
+exports["static"] =  function *(next) {
+   yield this.render("doc/static")
+}

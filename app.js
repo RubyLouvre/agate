@@ -3,11 +3,37 @@ var path = require('path');
 var app = koa();
 var http = require("http")
 
-var router = require('koa-router')();
-var log4js = require('log4js');
-var render = require('koa-ejs');
 
-app.use(require('koa-static')("public")) //处理js, css, jpg, png , ttf, woff， eot, otf, svg等静态资源
+
+ //============设置静态资源缓存==============
+ //处理public目录下的js, css, jpg, png , ttf, woff， eot, otf, svg文件
+var staticCache = require('koa-static-cache')
+app.use(staticCache(path.join(__dirname, 'public'), {
+  maxAge: 365 * 24 * 60 * 60
+}))
+
+//============设置etag==============
+var conditional = require('koa-conditional-get');
+var etag = require('koa-etag');
+app.use(conditional());
+app.use(etag());
+
+//============req.body==============
+//req.body为一个对象,以键值对的形式存放POST请求中的数据
+//使用 https://github.com/koajs/bodyparser 模块
+//受 https://github.com/stream-utils/raw-body  https://github.com/Raynos/body 所启发
+//http://codeforgeek.com/2014/09/handle-get-post-request-express-4/
+var bodyParser = require('koa-bodyparser');
+app.use(bodyParser());
+
+//============设置日志=============
+var log4js = require('log4js');
+var loggerName = 'normal';
+var logjson = require(path.join(__dirname, "config", "log4js.json"))
+app.logger = log4js.configure(logjson);
+
+//============设置视图引擎=============
+var render = require('koa-ejs');
 render(app, {
         root: path.join(__dirname, 'app', "pages"),
         layout: '../layout/template',
@@ -17,7 +43,7 @@ render(app, {
                 // locals: locals,
                 // filters: filters
 });
-//错误处理
+//============设置错误处理=============
 //https://github.com/koajs/onerror/blob/master/index.js
 app.use(function*(next) {
         try {
@@ -61,9 +87,6 @@ app.use(function*(next) {
 })
 
 
-var loggerName = 'normal';
-var logjson = require(path.join(__dirname, "config", "log4js.json"))
-app.logger = log4js.configure(logjson);
 app.use(function*(next) {
         var req = this.request,
                 header = req.header
@@ -72,12 +95,12 @@ app.use(function*(next) {
         yield next;
 })
 
-//this.env = process.env.NODE_ENV || 'development';
 
-//加载所有路由规则
+
+//============转为各种请求到对controller#action中去==============
+var router = require('koa-router')();
 var routes = require(path.join(__dirname, "config", "routes.js"))
-        //缓存所有控制器
-var controllers = Object.create(null)
+var controllers = Object.create(null)  //缓存所有控制器
 Object.keys(routes).forEach(function(key) {
         var val = routes[key]
         var arr = key.split(" ")
