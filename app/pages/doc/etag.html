@@ -1,0 +1,8 @@
+<p>HTTP 提供了许多页面缓存的方案，其中属 Etag 和 Last-Modified 应用最广。
+如果想拿到 Etag，就必须先拿到要输出的数据，所以 Etag 只能减少带宽的占用，并不能降低服务器的消耗。
+如果是静态页面，可以判断文件最近一次的修改时间（Last-Modified），
+获取文件上次修改时间的消耗比拿到整个数据的消耗要小的多。所以很多时候 Etag 都是配合这 Last-Modified 一起使用的。</p>
+<p>需要配合<a href="https://github.com/koajs/conditional-get">koa-conditional-get</a>使用</p>
+<p><a href="http://snoopyxdy.blog.163.com/blog/static/6011744020137209451697/">etag session保存http会话  </a></p>
+<p><a href="http://www.infoq.com/cn/articles/etags">etag 介绍  </a></p>
+
