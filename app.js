@@ -99,7 +99,6 @@ Object.keys(routes).forEach(function(key) {
 
         }
         var action = controller[saction]
-        console.log(action + "")
         if (typeof action === "function") {
                 if(typeof router[method] === "function"){
                         router[method](rule, action)

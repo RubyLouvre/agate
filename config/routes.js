@@ -1,23 +1,19 @@
 
 var routes = {
-
-  "get /": {
-    controller: "doc",
-    action: "index"
-  },
-  "get /es6-generators": {
-    controller: "doc",
-    action: "es6-generators"
-  },
-  "get /logger": {
-    controller: "doc",
-    action: "logger"
-  },
-  "get /cookie": {
-    controller: "doc",
-    action: "cookie"
-  }
-  
+    "get /": {
+        controller: "doc",
+        action: "index"
+    },
+    "get /doc": {
+        controller: "doc",
+        action: "index"
+    }
 }
+"es6-generators logger, cookie, favion".replace(/\w+/g, function (action) {
+    routes["get /" + action] = {
+        controller: "doc",
+        action: action
+    }
+})
 
 module.exports = routes
