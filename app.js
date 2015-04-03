@@ -3,6 +3,9 @@ var path = require('path');
 var app = koa();
 var http = require("http")
 
+ //============设置session==============
+var session = require('koa-session')
+app.use(session(app))
 
 
  //============设置静态资源缓存==============
@@ -122,6 +125,7 @@ Object.keys(routes).forEach(function(key) {
 
         }
         var action = controller[saction]
+        console.log(val)
         if (typeof action === "function") {
                 if(typeof router[method] === "function"){
                         router[method](rule, action)
@@ -139,6 +143,7 @@ app.use(router.routes())
 app.use(router.allowedMethods());
 
 app.on("error", function(err, ctx) {
+    console.log(error)
         //https://github.com/koajs/examples/issues/20
         console.log("捕获到错误")
 })
