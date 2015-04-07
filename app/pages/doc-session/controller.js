@@ -2,12 +2,11 @@ exports.login = function*(next) {
   var username = this.session.username
 
   if (username) {
-        console.log("33333333333333333"+username)
+    console.log("33333333333333333"+username)
     this.redirect("/user")
   } else if (this.method == 'POST') {
     var body = this.request.body
     this.session.username = body.username
-    console.log("++++++++++++++++")
     this.redirect("/user")
   } else {
     yield this.render("doc-session/index")

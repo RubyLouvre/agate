@@ -149,9 +149,28 @@ app.on("error", function(err, ctx) {
 })
 
 
-app.use(function*() {
-    //应该再也不跑到这里来
-    this.body = 'error! [ ' + this.originalUrl + " ]不存在!"
-});
+app.use(function *pageNotFound(next){
+  yield next;
+
+  if (404 != this.status) return;
+
+  // we need to explicitly set 404 here
+  // so that koa doesn't assign 200 on body=
+  this.status = 404;
+
+  switch (this.accepts('html', 'json')) {
+    case 'html':
+      this.type = 'html';
+      this.body = '<p>Page Not Found</p>';
+      break;
+    case 'json':
+      this.body = {
+        message: 'Page Not Found'
+      };
+      break
+    default:
+      this.type = 'text';
+      this.body = 'Page Not Found';
+  });
 app.listen(3000);
 console.log("已经启动http://localhost:3000/")
