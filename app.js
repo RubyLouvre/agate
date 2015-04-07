@@ -62,7 +62,7 @@ app.use(function*(next) {
                 status: 500
             }
         }
-        console.log(err)
+        log4js.getLogger("error").error(err.stack)
             // delegate
         this.app.emit('error', err, this);
         // nothing we can do here other
@@ -143,13 +143,14 @@ app.use(router.routes())
 app.use(router.allowedMethods());
 
 app.on("error", function(err, ctx) {
-    console.log(err)
+  
         //https://github.com/koajs/examples/issues/20
     console.log("捕获到错误")
 })
 
 
 app.use(function*() {
+    //应该再也不跑到这里来
     this.body = 'error! [ ' + this.originalUrl + " ]不存在!"
 });
 app.listen(3000);

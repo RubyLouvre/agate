@@ -36,6 +36,7 @@ String("get post delete put").replace(/\w+/g, function (method) {
 //https://github.com/1602/compound
 mapper.get("/login", "doc-session#login")
 mapper.post("/login", "doc-session#login")
+mapper.get("/user", "doc-session#user")
 mapper.get("/sessionother", "doc-session#other")
 mapper.get("/logout", "doc-session#logout")
 
