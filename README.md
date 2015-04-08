@@ -72,3 +72,22 @@ https://github.com/Textalk/angular-schema-form
 详看 https://github.com/gcanti/tcomb-form-native https://github.com/joshfire/jsonform
 
 
+如果你在应用下启动报如下错误
+```
+D:\agate>pm2 start app --node-args="--harmony"
+fs.js:751
+  return binding.mkdir(pathModule._makeLong(path),
+                 ^
+Error: ENOENT, no such file or directory 'D:\Users\qincheng.zhong.QUNARSERVERS\.
+pm2'
+```
+那么你应该建立`D:\Users\qincheng.zhong.QUNARSERVERS\.pm2`目录就可以了
+```
+D:\agate>mkdir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
+
+D:\agate>dir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
+```
+
+然后重新运行`pm2 start app --node-args="--harmony"`
+
+

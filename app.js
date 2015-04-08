@@ -143,34 +143,35 @@ app.use(router.routes())
 app.use(router.allowedMethods());
 
 app.on("error", function(err, ctx) {
-  
-        //https://github.com/koajs/examples/issues/20
+
+    //https://github.com/koajs/examples/issues/20
     console.log("捕获到错误")
 })
 
 
-app.use(function *pageNotFound(next){
-  yield next;
+app.use(function* pageNotFound(next) {
+    yield next;
 
-  if (404 != this.status) return;
+    if (404 != this.status) return;
 
-  // we need to explicitly set 404 here
-  // so that koa doesn't assign 200 on body=
-  this.status = 404;
+    // we need to explicitly set 404 here
+    // so that koa doesn't assign 200 on body=
+    this.status = 404;
 
-  switch (this.accepts('html', 'json')) {
-    case 'html':
-      this.type = 'html';
-      this.body = '<p>Page Not Found</p>';
-      break;
-    case 'json':
-      this.body = {
-        message: 'Page Not Found'
-      };
-      break
-    default:
-      this.type = 'text';
-      this.body = 'Page Not Found';
-  });
+    switch (this.accepts('html', 'json')) {
+        case 'html':
+            this.type = 'html';
+            this.body = '<p>Page Not Found</p>';
+            break;
+        case 'json':
+            this.body = {
+                message: 'Page Not Found'
+            };
+            break
+        default:
+            this.type = 'text';
+            this.body = 'Page Not Found';
+    }
+});
 app.listen(3000);
 console.log("已经启动http://localhost:3000/")

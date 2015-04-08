@@ -26,7 +26,9 @@
     
     "koa-etag": "^2.0.0",
     "koa-conditional-get":"^1.0.2",
-    "koa-bodyparser": "^1.4.1"
+    "koa-bodyparser": "^1.4.1",
+    
+    "pm2":"^0.12.10"
   },
   "devDependencies": {
 
