@@ -71,8 +71,9 @@ ejs.render(str, options);  //模板名, 配置对象,里面可以重设上面参
 https://github.com/Textalk/angular-schema-form
 详看 https://github.com/gcanti/tcomb-form-native https://github.com/joshfire/jsonform
 
-
-如果你在应用下启动报如下错误
+pm2的使用
+_______________________
+如果你在启动时报以下错误
 ```
 D:\agate>pm2 start app --node-args="--harmony"
 fs.js:751
@@ -87,7 +88,9 @@ D:\agate>mkdir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
 
 D:\agate>dir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
 ```
+https://doesnotscale.com/deploying-node-js-with-pm2-and-nginx/
+然后运行`pm2 start app --node-args="--harmony"`（你不需要再运行node app --harmony） 
+![image](https://cloud.githubusercontent.com/assets/190846/7040248/8ed8d2ca-ddff-11e4-8868-2c0c16b95549.png)
 
-然后重新运行`pm2 start app --node-args="--harmony"`
 
 
