@@ -1,0 +1,11 @@
+{
+    "name": "agate",
+    "script": "app.js",
+    "cwd": "D:/agate",
+    "node_args": "--harmony",
+    "instances": 2,
+    "error_file": "logs/agate-error.log",
+    "out_file": "logs/agate-out.log",
+    "pid_file": "logs/agate.pid",
+    "watch":["app", "public"]
+}
