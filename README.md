@@ -48,11 +48,11 @@ render(app, {
 });
 ```
 render方法使用
-```
+```javascript
 ejs.render(str, options);  //模板名, 配置对象,里面可以重设上面参数
 ```
 一个简单例子,某个action的代码
-```
+```javascript
   router.get('/users', function *(next) {
      var users = ["司徒正美", "清风火羽", "古道瘦马"]
      console.log(users)
@@ -74,7 +74,7 @@ https://github.com/Textalk/angular-schema-form
 pm2的使用
 _______________________
 如果你在启动时报以下错误
-```
+```javascript
 D:\agate>pm2 start app --node-args="--harmony"
 fs.js:751
   return binding.mkdir(pathModule._makeLong(path),
@@ -83,7 +83,7 @@ Error: ENOENT, no such file or directory 'D:\Users\qincheng.zhong.QUNARSERVERS\.
 pm2'
 ```
 那么你应该建立`D:\Users\qincheng.zhong.QUNARSERVERS\.pm2`目录就可以了
-```
+```javascript
 D:\agate>mkdir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
 
 D:\agate>dir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
@@ -92,5 +92,21 @@ https://doesnotscale.com/deploying-node-js-with-pm2-and-nginx/
 然后运行`pm2 start app --node-args="--harmony"`（你不需要再运行node app --harmony） 
 ![image](https://cloud.githubusercontent.com/assets/190846/7040248/8ed8d2ca-ddff-11e4-8868-2c0c16b95549.png)
 
+
+当然我们也可以用配置方式json启动pm2
+
+```javascript
+$ pm2 start processes.json
+$ pm2 stop processes.json
+$ pm2 delete processes.json
+$ pm2 restart processes.json
+```
+
+pm2.json在window下不能使用监控功能watch
+配置方式不时会出问题,实在不行,还是换回命令行方式
+```
+pm2 start app --node-args="--harmony" --name "kkk" --watch
+```
+-i 好像不怎么好用
 
 
