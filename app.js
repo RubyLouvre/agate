@@ -42,7 +42,7 @@ render(app, {
     root: path.join(__dirname, 'app', "pages"),
     layout: '../layout/template',
     viewExt: 'html',
-    cache: false,
+    cache: app.env !== "development" ,//开发环境不进行缓存
     debug: true
         // locals: locals,
         // filters: filters
