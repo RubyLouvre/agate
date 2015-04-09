@@ -31,8 +31,8 @@ exports["static"] =  function *(next) {
 
 exports["fekitVersion"] =  function *(next) {
     yield this.render("doc/fekitVersion", {
-        links: ["styles/release/common.css"],
-        scripts: ["scripts/release/common.js"],
+        links: ["common.css"],
+        scripts: ["common.js"],
         layout: "../layout/template_fekit"
     })
 }
