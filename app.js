@@ -104,7 +104,9 @@ app.use(function*(next) {
 //============转为各种请求到对controller#action中去==============
 var router = require('koa-router')();
 var routes = require(path.join(__dirname, "config", "routes.js"))
-var controllers = Object.create(null) //缓存所有控制器
+var Cache =  require(path.join(__dirname, "core", "lru.js")) 
+//https://cnodejs.org/topic/4fa94df3b92b05485007fd87 防止撑爆内存,必须限制键值对数量,因此不用普通JS对象
+var controllers = new Cache(1024)//缓存所有控制器
 Object.keys(routes).forEach(function(key) {
     var val = routes[key]
     var arr = key.split(" ")
@@ -113,15 +115,16 @@ Object.keys(routes).forEach(function(key) {
     var scontroller = val.controller
     var saction = val.action
     var controller
-    if (typeof controllers[scontroller] === "object") {
-        controller = controllers[scontroller]
+    var _controller = controllers.get(scontroller) 
+    if (typeof _controller === "object") {
+        controller = _controller
     } else {
         try {
             var controllerPath = path.join(__dirname, "app", "pages", scontroller, "controller.js")
             controller = require(controllerPath)
+            controllers.set(scontroller, controller) 
         } catch (e) {
             log4js.getLogger("error").error(scontroller + " 控制器没有定义")
-
         }
 
     }
@@ -143,7 +146,6 @@ app.use(router.routes())
 app.use(router.allowedMethods());
 
 app.on("error", function(err, ctx) {
-
     //https://github.com/koajs/examples/issues/20
     console.log("捕获到错误")
 })
