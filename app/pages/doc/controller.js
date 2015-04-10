@@ -36,3 +36,7 @@ exports["fekitVersion"] =  function *(next) {
         layout: "../layout/template_fekit"
     })
 }
+
+exports["cacti"] =  function *(next) {
+    yield this.render("doc/cacti")
+}
