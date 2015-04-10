@@ -1,4 +1,4 @@
-var fs = require('fs') 
+var fs = require('fs')
 
 var VERSION_FILE  //version.mapping的文件路径
 var QZZ_PATH  //qzz项目的路径
@@ -31,7 +31,7 @@ exports.flushVersions = function () {
  * 初始化版本号 opts.path
  * @param opts
  */
-exports.init = function (opts) {
+exports.configure = function (opts) {
     VERSION_FILE = opts.path 
     QZZ_PATH = [opts.qzzHost , '/', opts.qzz , '/prd/'].join('') 
     exports.flushVersions() 
@@ -51,4 +51,4 @@ exports.version = function version(key) {
 
     return QZZ_PATH + key 
 
-} 
+}

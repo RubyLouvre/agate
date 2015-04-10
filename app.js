@@ -40,7 +40,7 @@ app.logger = log4js.configure(logjson);
 var render = require('koa-ejs');
 var versionJson = require(path.join(__dirname, "config", "version.json"))
 var fekitVersion = require(path.join(__dirname, "config", "fekitVersion"))
-fekitVersion.init(versionJson)
+fekitVersion.configure(versionJson)
 render(app, {
     root: path.join(__dirname, 'app', "pages"),
     layout: '../layout/template',
