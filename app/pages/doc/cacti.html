@@ -1,0 +1,144 @@
+<div>
+    <!-- wiki content -->
+    <h3>用途</h3>
+
+    <p>该接口用于前端把收集好的数据记录到后端服务器上，并最后收集绘制出CACTI的监控图表。</p>
+
+    <h3>接口地址：</h3>
+
+    <p><a href="http://m.ued.qunar.com/monitor/log" class="external-link" rel="nofollow">http://m.ued.qunar.com/monitor/log</a></p>
+
+    <h3>参数：</h3>
+
+    <div class="table-wrap">
+        <table class="confluenceTable"><tbody>
+        <tr>
+            <th class="confluenceTh"> 参数 </th>
+            <th class="confluenceTh"> 类型 </th>
+            <th class="confluenceTh"> 必填 </th>
+            <th class="confluenceTh"> 备注 </th>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> code </td>
+            <td class="confluenceTd"> String </td>
+            <td class="confluenceTd"> 是 </td>
+            <td class="confluenceTd"> 监控名，参考规范 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> time </td>
+            <td class="confluenceTd"> int </td>
+            <td class="confluenceTd"> -- </td>
+            <td class="confluenceTd"> 时间（监控图的纵轴值），不传时记录只记录次数 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> logbrowser <br class="atl-forced-newline"> </td>
+            <td class="confluenceTd"> 1/0 </td>
+            <td class="confluenceTd"> -- </td>
+            <td class="confluenceTd"> 是否区分浏览器做记录，默认0 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> ignoreSpider <br class="atl-forced-newline"> </td>
+            <td class="confluenceTd"> 1/0 </td>
+            <td class="confluenceTd"> -- </td>
+            <td class="confluenceTd"> 是否忽略<a href="/pages/viewpage.action?pageId=49272416" title="整理beacon日志时发现的一些蜘蛛的特征">爬虫</a> 的请求，1表示不记录爬虫的访问，默认0 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> count </td>
+            <td class="confluenceTd"> int </td>
+            <td class="confluenceTd"> -- </td>
+            <td class="confluenceTd"> 默认是1，表示该次请求记录N次count </td>
+        </tr>
+        </tbody></table>
+    </div>
+
+
+    <h3>返回：</h3>
+
+    <p>接口返回一个1*1像素的gif，大约43字节。</p>
+
+    <h3>能够区分出的浏览器：</h3>
+
+    <div class="table-wrap">
+        <table class="confluenceTable"><tbody>
+        <tr>
+            <th class="confluenceTh"> 代码 </th>
+            <th class="confluenceTh"> 含义 </th>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> IE6 </td>
+            <td class="confluenceTd"> MSIE 6 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> IE7 </td>
+            <td class="confluenceTd"> MSIE 7 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> IE8 </td>
+            <td class="confluenceTd"> MSIE 8 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> IE9 </td>
+            <td class="confluenceTd"> MSIE 9 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> IE10 </td>
+            <td class="confluenceTd"> MSIE 10 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> IE11 </td>
+            <td class="confluenceTd"> MSIE 11 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> Chrome </td>
+            <td class="confluenceTd"> Chrome </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> Waterfox </td>
+            <td class="confluenceTd"> Waterfox </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> Firefox </td>
+            <td class="confluenceTd"> Firefox </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> Safari </td>
+            <td class="confluenceTd"> Safari </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> Android </td>
+            <td class="confluenceTd"> Android </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> iOS </td>
+            <td class="confluenceTd"> iOS </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> Winphone </td>
+            <td class="confluenceTd"> Windows Phone </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> UnknownTouch </td>
+            <td class="confluenceTd"> 其他移动设备 </td>
+        </tr>
+        <tr>
+            <td class="confluenceTd"> Unknown </td>
+            <td class="confluenceTd"> 未知浏览器 </td>
+        </tr>
+        </tbody></table>
+    </div>
+
+    <h3>例子：</h3>
+
+    <p><a href="http://m.ued.qunar.com/monitor/log?code=h_s_bktool_render_time&amp;time=1024" class="external-link" rel="nofollow">http://m.ued.qunar.com/monitor/log?code=hotel_detail_bktool_render&amp;time=1024</a></p>
+    <div class="code panel">
+        <pre class="code-javascript">
+var img = new Image();
+    img.onload=function(){
+    //防止IE7 GC时在请求未发出去之前abort掉该请求。
+    img.onload=null;
+    img=null;
+};
+img.src="http://m.ued.qunar.com/monitor/log?code=hotel_detail_bktool_render&amp;time=1024";
+        </pre>
+    </div>
+</div>

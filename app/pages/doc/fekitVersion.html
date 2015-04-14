@@ -1,0 +1,79 @@
+<h2>fekit ver文件部署</h2>
+
+<p>使用了fekit的前端项目，在页面中引用资源的地址如下所示：</p>
+
+<pre><code>&lt;script src="http://qunarzz.com/hotel_fekit/prd/scripts/base@d7dadc627df2c525fc695a60bcba9f18.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>该链接由两部分构成，地址部分<code>http://qunarzz.com/hotel_fekit/prd/scripts/base.js</code>以及版本号<code>@d7dadc627df2c525fc695a60bcba9f18</code></p>
+
+<p>版本号是fekit在发布系统中生成的，执行<code>fekit min</code>对静态资源进行打包压缩之后，生成versions.mapping文件，内容如下所示：</p>
+
+<pre><code>common.js#a4797f0cdce349992637b076a96f7e9b
+    index.js#d9db02c3dabdb26bdbd7f8c0a4e05cbd
+    request.js#47ea34ed8b3ca91cd81ff829c6cb6972
+    oniui.js#96b68ebb8be798cdd126ad9d82484134
+    renderTicker.js#6e413840fa9f9854ee6cc2a9dbfad54f
+    common.css#e1d4defaabe9855a5ac608dd53c09d81
+    oniui.css#b8686c3645bc0b4582df6ba23b3e76fa
+</code></pre>
+
+<p>形式为：&lt;文件名>#&lt;版本号></p>
+
+<p>在ejs模板template_fekit.html中，使用:</p>
+
+<pre><code>
+&lt;%links.forEach(function(link) {%&gt;
+    &lt;link rel="stylesheet" href="&lt;%=: link|qzzUrl %&gt;"&gt;
+&lt;%})%&gt;
+
+&lt;%scripts.forEach(function(script) {%&gt;
+    &lt;script type="text/javascript" src="&lt;%=: script|qzzUrl %&gt;"&gt;&lt;/script&gt;
+&lt;%})%&gt;
+</code></pre>
+
+<p>引入静态资源。</p>
+
+<p>在app.js中配置ejs的地方增加filters：</p>
+
+<pre><code>
+render(app, {
+    root: path.join(__dirname, 'app', "pages"),
+    layout: '../layout/template',
+    viewExt: 'html',
+    cache: false,
+    debug: true,
+    filters: {
+        //处理fekit前端资源版本号
+        qzzUrl: fekitVersion.version
+    }
+    // locals: locals,
+    // filters: filters
+});
+</code></pre>
+
+<p>config目录下，增加配置version.json：</p>
+
+<pre><code>
+{
+    "path": "ref/ver/versions.mapping", //versions.mapping路径
+
+    "qzzHost": "http://qunarzz.com",        //qzz域名
+
+    "qzz": "test"                           //工程名
+}
+</code></pre>
+
+<p>渲染页面时，使用:</p>
+
+<pre><code>
+exports["fekitVersion"] =  function *(next) {
+    yield this.render("doc/fekitVersion", {
+        links: ["common.css"],
+        scripts: ["common.js"],
+        layout: "../layout/template_fekit"
+    })
+}
+</code></pre>
+
+<p>即可。</p>
