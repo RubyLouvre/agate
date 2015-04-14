@@ -28,3 +28,15 @@ exports["favicon"] =  function *(next) {
 exports["static"] =  function *(next) {
    yield this.render("doc/static")
 }
+
+exports["fekitVersion"] =  function *(next) {
+    yield this.render("doc/fekitVersion", {
+        links: ["common.css"],
+        scripts: ["common.js"],
+        layout: "../layout/template_fekit"
+    })
+}
+
+exports["cacti"] =  function *(next) {
+    yield this.render("doc/cacti")
+}
