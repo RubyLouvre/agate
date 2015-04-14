@@ -24,9 +24,16 @@ exports["es6-generators"] =  function *(next) {
 exports["favicon"] =  function *(next) {
    yield this.render("doc/favicon")
 }
+exports["ejs"] =  function *(next) {
+   yield this.render("doc/ejs")
+}
 
 exports["static"] =  function *(next) {
    yield this.render("doc/static")
+}
+
+exports["filters"] =  function *(next) {
+   yield this.render("doc/filters")
 }
 
 exports["fekitVersion"] =  function *(next) {

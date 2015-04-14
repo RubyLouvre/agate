@@ -3,7 +3,7 @@
 <p>当你下载好本框架后，直接npm install就能安装好各种依赖，
     然后进入config目录，使用 pm2 start processes.json， 于是服务器就起来了。</p>
 <p>app是写业务代码， 里面有两个目录pages与layout， pages下面应该是一个个目录，每个目录代表一个页面。
-   每个目录有一个controller.js（它就是MVC中的C），C里面以这样的形式组织代码：
+    每个目录有一个controller.js（它就是MVC中的C），C里面以这样的形式组织代码：
 </p>
 <pre class="brush:javascript;gutter:false;toolbar:false">
 exports.index  = function*(next) {
@@ -44,7 +44,7 @@ render(app, {
 </pre>
 <p>如果我们有许多业务逻辑，那么请在对应目录下添加对应JS文件（MVC中的C），然后在action中调用</p>
 <p>有了MVC了， 那么我们的请求如何才能到达这里呢，那就需要路由系统了。路由系统会根据config下的routes.js定义的路由规则进行定义
-定义到对应的controller下的某action下。一个完整的路由规则如下：
+    定义到对应的controller下的某action下。一个完整的路由规则如下：
 </p>
 <pre class="brush:javascript;gutter:false;toolbar:false">
 routes["get /xxxx"] = {
@@ -54,8 +54,8 @@ routes["get /xxxx"] = {
 </pre>
 
 <p>我们写代码时，其操作过程是反过来的，首先是在routes.js下添加路由规则，然后在pages目录下建议你的页面目录，下面建立controller.js
-然后里面有多少个请求，就建议多少个action,然后再建立对应的页面及模型JS， 如果不满意原layout页面，可以再建新的layout，
-然后通过this.render方法的第2个参数指定。
+    然后里面有多少个请求，就建议多少个action,然后再建立对应的页面及模型JS， 如果不满意原layout页面，可以再建新的layout，
+    然后通过this.render方法的第2个参数指定。
 </p>
 <p>这样就over了。什么日志， session, cookie, 多线程并发都为你准备好了。</p>
 
@@ -65,8 +65,9 @@ routes["get /xxxx"] = {
     <li><a href="/static">静态资源处理</a></li>
     <li><a href="/cookie">cookie</a></li>
     <li><a href="/login">session</a></li>
+    <li><a href="/ejs">ejs模板</a></li>
+    <li><a href="/filters">模板过滤器</a></li>
     <li><a href="/fekitVersion">fekitVersion</a></li>
-    <li><a href="/login">session</a></li>
 </ol>
 
 

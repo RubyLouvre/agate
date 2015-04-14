@@ -38,19 +38,14 @@ app.logger = log4js.configure(logjson);
 
 //============设置视图引擎=============
 var render = require('koa-ejs');
-var versionJson = require(path.join(__dirname, "config", "version.json"))
-var fekitVersion = require(path.join(__dirname, "config", "fekitVersion"))
-fekitVersion.configure(versionJson)
+var filters = require(path.join(__dirname, "config", "filters"))
 render(app, {
     root: path.join(__dirname, 'app', "pages"),
     layout: '../layout/template',
     viewExt: 'html',
     cache: app.env !== "development" ,//开发环境不进行缓存
     debug: true,
-    filters: {
-        //处理fekit前端资源版本号
-        qzzUrl: fekitVersion.version
-    }
+    filters: filters
         // locals: locals,
         // filters: filters
 });

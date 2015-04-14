@@ -1,6 +1,6 @@
 <h2>session的使用</h2>
 <p>session我们已经在app.js中配置好了，在action方法中使用时，就是简单的对this.session添加或删除键值对。</p>
-<pre class="brush:javascript;getter:false;toolbar:flase">
+<pre class="brush:javascript;gutter:false;toolbar:flase">
 exports.login = function*(next) {
   var username = this.session.username
   if (username) {
