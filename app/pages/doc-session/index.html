@@ -1,3 +1,20 @@
+<h2>session的使用</h2>
+<p>session我们已经在app.js中配置好了，在action方法中使用时，就是简单的对this.session添加或删除键值对。</p>
+<pre class="brush:javascript;getter:false;toolbar:flase">
+exports.login = function*(next) {
+  var username = this.session.username
+  if (username) {
+    this.redirect("/user")
+  } else if (this.method == 'POST') {
+    var body = this.request.body
+    this.session.username = body.username
+    this.redirect("/user")
+  } else {
+    yield this.render("doc-session/index")
+  }
+}
+</pre>
+<p>具体例子可见pages/doc-session的例子：</p>
 <fieldset>
     <form action="login" method="POST">
         <p>名字: <input name="username" type="text"></p>
