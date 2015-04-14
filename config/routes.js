@@ -26,7 +26,7 @@ String("get post delete put").replace(/\w+/g, function (method) {
 })
 
 
-"es6-generators logger cookie static favicon fekitVersion cacti ejs".replace(/[\w-]+/g, function (action) {
+"es6-generators logger cookie static favicon fekitVersion cacti ejs filters".replace(/[\w-]+/g, function (action) {
     routes["get /" + action] = {
         controller: "doc",
         action: action

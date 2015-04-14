@@ -32,6 +32,10 @@ exports["static"] =  function *(next) {
    yield this.render("doc/static")
 }
 
+exports["filters"] =  function *(next) {
+   yield this.render("doc/filters")
+}
+
 exports["fekitVersion"] =  function *(next) {
     yield this.render("doc/fekitVersion", {
         links: ["common.css"],
