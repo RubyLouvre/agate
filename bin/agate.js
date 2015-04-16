@@ -5,7 +5,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp')
 var rootPath = __dirname.split(path.sep).slice(0, -1).join(path.sep)
 program
-        .version('0.0.1')
+       .version(JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')).version)
 //    .allowUnknownOption()
 
 //<xxx>表示这是一个必填参数
