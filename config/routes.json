@@ -1,0 +1,19 @@
+{
+	"get /": "doc index",
+	"get /cacti": "doc cacti",
+	"get /cookie": "doc cookie",
+	"get /doc": "doc index",
+	"get /ejs": "doc ejs",
+	"get /es6-generators": "doc es6-generators",
+	"get /favicon": "doc favicon",
+	"get /fekitVersion": "doc fekitVersion",
+	"get /filters": "doc filters",
+	"get /logger": "doc logger",
+	"get /login": "doc-session login",
+	"get /logout": "doc-session logout",
+	"get /sessionother": "doc-session other",
+	"get /static": "doc static",
+	"get /user": "doc-session user",
+	"get /xxx": "home index",
+	"post /login": "doc-session login"
+}

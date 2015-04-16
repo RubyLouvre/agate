@@ -19,7 +19,7 @@ String("get post delete put").replace(/\w+/g, function (method) {
         var arr = dispatch.split("#")
         routes[method + " " + rule] = {
             controller: arr[0],
-            action: arr[1]
+            action: arr[1]  
         }
         return mapper
     }
