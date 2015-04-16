@@ -27,6 +27,9 @@
     "log4js": "^0.6.0",
     "pm2": "^0.12.10"
   },
+  "bin":{
+      "agate":"bin/agate.js"
+  },
   "devDependencies": {},
   "scripts": {},
   "engines": {

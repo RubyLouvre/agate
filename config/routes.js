@@ -1,4 +1,4 @@
-
+//  注意,已经不用这个了
 var routes = {
     "get /": {
         controller: "doc",
