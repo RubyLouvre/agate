@@ -3,16 +3,13 @@ var program = require('commander');
 var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp')
+var color = require('cli-color')
 var rootPath = __dirname.split(path.sep).slice(0, -1).join(path.sep)
 program
        .version(JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')).version)
-//    .allowUnknownOption()
 
-program
-  .allowUnknownOption()
-  .option('-a, --aaa <aaa>', '请传入aaa参数')
-  .option('-b, --bbb <aaa>', '请传入bbb参数')
-  .option('-c, --ccc <ccc>', '请传入ccc参数')
+
+
   //.parse(process.argv);
 
 //<xxx>表示这是一个必填参数
@@ -92,14 +89,19 @@ program
                 })
 
 
-
             }
 
         }).on('--help', function () {
-    console.log('\t例子:');
+    console.log('参数:');
     console.log();
-    console.log('    $ deploy exec sequential');
-    console.log('    $ deploy exec async');
+    console.log('%s\t  后跟路由规则，如%s，它会添加在config/routes.json下', color.bold('rule'), color.cyan('page\\:pageId'));
+    console.log('%s后跟控制器的名字，不能有非法字符, 如topic', color.bold('controller'))
+    console.log('它会在app/pages目录下建topic目录，再建一个controller.js');
+    console.log('%s\t  后面重复跟N个%s ，如%s',  color.bold('actions'), color.green('请求名#action名'),
+    color.cyan('get#index get#about post#create'));
+    console.log('此外get请求名默认可省略，相当于%s 有多少action就会建多少个相名空页面',  color.cyan('index about post#create'));
+    console.log('一个完整的命令如下');
+    console.log(color.cyan('agate scaffold page\\:pageId topic index about post#create'));
     console.log();
 });
 program.parse(process.argv)
