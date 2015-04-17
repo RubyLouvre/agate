@@ -4,10 +4,11 @@ var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp')
 var color = require('cli-color')
-var rootPath = __dirname.split(path.sep).slice(0, -1).join(path.sep)
+//var rootPath = __dirname.split(path.sep).slice(0, -1).join(path.sep)
+var rootPath = path.resolve(__dirname + '/..')
 program
         .version(JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')).version)
-
+console.log(path.join(__dirname, '../package.json') + "!")
 
 //<xxx>表示这是一个必填参数
 //[xxx]表示这是一个可选参数
@@ -106,8 +107,19 @@ program
         .command('start [port]')
         .description('输入一个端口号(没有默认为3000), 通过chrome打开该面')
         .action(function (port) {
-             port = isFinite(port) ? 3000  : parseInit(port)
-             
+            port = isFinite(port) ? 3000 : parseInit(port)
+            global.port = port
+
+            //   var ls =  require('child_process').spawn("C:\\Program Files\\nodejs\\node.exe",
+            //   ["--harmony", path.join(rootPath, 'app.js') ])
+            var ls = require('child_process').spawn(process.execPath,
+                    ["--harmony", path.join(rootPath, 'app.js')])
+
+            ls.stderr.on('data', function (data) {
+                console.log('stderr: ' + data);
+            });
+
+            //  console.log(port)
         })
 
 program.parse(process.argv)

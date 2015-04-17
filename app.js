@@ -126,10 +126,12 @@ Object.keys(routes).forEach(function(key) {
                         controller = require(controllerPath)
                         controllers.set(scontroller, controller)
                 } catch (e) {
-                        log4js.getLogger("error").error(scontroller + " 控制器没有定义")
+                       // log4js.getLogger("error").error(scontroller + " 控制器没有定义")
                 }
 
         }
+        if(!controller)
+            return
         var action = controller[saction]
         if (typeof action === "function") {
                 if (typeof router[method] === "function") {
@@ -175,5 +177,6 @@ app.use(function* pageNotFound(next) {
                         this.body = 'Page Not Found';
         }
 });
-app.listen(3000);
-console.log("已经启动http://localhost:3000/")
+var port = global.port || 3000
+app.listen(port);
+console.log("已经启动http://localhost:"+ port)
