@@ -8,6 +8,13 @@ program
        .version(JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')).version)
 //    .allowUnknownOption()
 
+program
+  .allowUnknownOption()
+  .option('-a, --aaa <aaa>', '请传入aaa参数')
+  .option('-b, --bbb <aaa>', '请传入bbb参数')
+  .option('-c, --ccc <ccc>', '请传入ccc参数')
+  //.parse(process.argv);
+
 //<xxx>表示这是一个必填参数
 //[xxx]表示这是一个可选参数
 //[xxx...]表示这是一个可选数组参数
@@ -96,3 +103,7 @@ program
     console.log();
 });
 program.parse(process.argv)
+
+if(program.aaa && program.bbb){
+    console.log(program.aaa +"  "+ program.bbb)
+}
