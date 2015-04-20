@@ -120,5 +120,11 @@ routes["get /xxxx"] = {
 更多教程，当你启动本工程后，首页就是教程首页。然后你再将routes中的路由规则重设首页，添加你自己的页面！
 
 
+主要命令
+```javascript
+pm2 start app --node-args="--harmony" --name "kkk" --watch 
+agate start 4000
+agate agate scaffold /test2 test2  index post#create
+node --harmony 4000
 
-
+```
