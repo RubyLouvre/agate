@@ -9,7 +9,7 @@ var rootPath = path.resolve(__dirname + '/..')
 program
         .version(JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')).version)
 console.log(path.join(__dirname, '../package.json') + "!")
-
+//process.chdir(rootPath)
 //<xxx>表示这是一个必填参数
 //[xxx]表示这是一个可选参数
 //[xxx...]表示这是一个可选数组参数
@@ -110,16 +110,15 @@ program
             port = isFinite(port) ? 3000 : parseInit(port)
             global.port = port
 
-            //   var ls =  require('child_process').spawn("C:\\Program Files\\nodejs\\node.exe",
-            //   ["--harmony", path.join(rootPath, 'app.js') ])
-            var ls = require('child_process').spawn(process.execPath,
-                    ["--harmony", path.join(rootPath, 'app.js')])
+            //process.execPath 相当于 "C:\\Program Files\\nodejs\\node.exe"
+            //http://www.cnblogs.com/xiziyin/p/3578905.html
+            var spawn = require('child_process').spawn
+            spawn(process.execPath,
+                    ["--harmony", path.join(rootPath, 'app.js')], {
+                stdio: 'inherit',
+                cwd: rootPath
+            })
 
-            ls.stderr.on('data', function (data) {
-                console.log('stderr: ' + data);
-            });
-
-            //  console.log(port)
         })
 
 program.parse(process.argv)
