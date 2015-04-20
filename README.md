@@ -41,10 +41,10 @@ https://doesnotscale.com/deploying-node-js-with-pm2-and-nginx/
 当然我们也可以用配置方式json启动pm2
 
 ```javascript
-$ pm2 start processes.json
-$ pm2 stop processes.json
-$ pm2 delete processes.json
-$ pm2 restart processes.json
+$ pm2 start pm2.json
+$ pm2 stop pm2.json
+$ pm2 delete pm2.json
+$ pm2 restart pm2.json
 ```
 
 pm2.json在window下不能使用监控功能watch
