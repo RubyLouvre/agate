@@ -8,6 +8,9 @@ app.keys = ['secret', 'key']; //https://github.com/koajs/koa/issues/203
 var session = require('koa-session')
 app.use(session(app))
 
+
+
+
 //============设置静态资源缓存==============
 //处理public目录下的js, css, jpg, png , ttf, woff， eot, otf, svg文件
 var staticCache = require('koa-static-cache')
@@ -114,7 +117,7 @@ Object.keys(routes).forEach(function(key) {
         var controllerAction = routes[key].split(" ")
         var scontroller = controllerAction[0]
         var saction = controllerAction[1]
-      
+
         var controller
         var _controller = controllers.get(scontroller)
         if (typeof _controller === "object") {
@@ -125,12 +128,12 @@ Object.keys(routes).forEach(function(key) {
                         controller = require(controllerPath)
                         controllers.set(scontroller, controller)
                 } catch (e) {
-                       // log4js.getLogger("error").error(scontroller + " 控制器没有定义")
+                        // log4js.getLogger("error").error(scontroller + " 控制器没有定义")
                 }
 
         }
-        if(!controller)
-            return
+        if (!controller)
+                return
         var action = controller[saction]
         if (typeof action === "function") {
                 if (typeof router[method] === "function") {
@@ -176,6 +179,18 @@ app.use(function* pageNotFound(next) {
                         this.body = 'Page Not Found';
         }
 });
-var port = global.port || 3000
-app.listen(port);
-console.log("已经启动http://localhost:"+ port)
+
+void function(){
+    var port, url
+    process.argv.slice(2).forEach(function(el) {
+            if (!el.indexOf("port")) {
+                    port = parseFloat(el.split("=")[1])
+            } else if (!el.indexOf("url")) {
+                    url = el.split("=")[1]
+            }
+    })
+    port = port || 3000
+    url = url || "http://localhost:"
+    app.listen(port)
+    console.log("已经启动" + url + port)
+}()

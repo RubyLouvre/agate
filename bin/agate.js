@@ -4,6 +4,7 @@ var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp')
 var color = require('cli-color')
+
 //var rootPath = __dirname.split(path.sep).slice(0, -1).join(path.sep)
 var rootPath = path.resolve(__dirname + '/..')
 program
@@ -104,20 +105,24 @@ program
 });
 
 program
-        .command('start [port]')
+        .command('start [port] [url]')
         .description('输入一个端口号(没有默认为3000), 通过chrome打开该面')
-        .action(function (port) {
-            port = isFinite(port) ? 3000 : parseInit(port)
-            global.port = port
+        .action(function (port, url) {
+            port = isFinite(port) ? parseFloat(port) : 3000
+            url = url || "http://localhost:"
 
             //process.execPath 相当于 "C:\\Program Files\\nodejs\\node.exe"
             //http://www.cnblogs.com/xiziyin/p/3578905.html
             var spawn = require('child_process').spawn
-            spawn(process.execPath,
-                    ["--harmony", path.join(rootPath, 'app.js')], {
+            var ls = spawn(process.execPath,
+                    ["--harmony", path.join(rootPath, 'app.js'), "port=" + port, "url=" + url], {
                 stdio: 'inherit',
                 cwd: rootPath
             })
+
+            var open = require("open");
+            open(url + port);
+
 
         })
 
