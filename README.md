@@ -41,6 +41,7 @@ https://doesnotscale.com/deploying-node-js-with-pm2-and-nginx/
 当然我们也可以用配置方式json启动pm2
 
 ```javascript
+//需要跑到config目录下
 $ pm2 start pm2.json
 $ pm2 stop pm2.json
 $ pm2 delete pm2.json
