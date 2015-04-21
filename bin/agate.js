@@ -128,7 +128,7 @@ program
         .command('pm2')
         .description('通过pm2模块执行APP')
  .action(function () {
- \
+     
    //https://github.com/Unitech/PM2/issues/887
         spawn(process.execPath, 
                     [path.join(rootPath, "node_modules/pm2/bin/pm2"),"start", path.join(rootPath, 'config', "pm2.json")], {

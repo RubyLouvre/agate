@@ -9,8 +9,6 @@ var session = require('koa-session')
 app.use(session(app))
 
 
-console.log(process.env.foo)
-
 //============设置静态资源缓存==============
 //处理public目录下的js, css, jpg, png , ttf, woff， eot, otf, svg文件
 var staticCache = require('koa-static-cache')

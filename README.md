@@ -55,6 +55,12 @@ pm2 start app --node-args="--harmony" --name "kkk" --watch
 ```
 -i 好像不怎么好用
 
+在开发环境使用 nodemon, 在生产环境使用pm2
+//http://ourjs.com/detail/52456ae04cd0e14503000009
+```javascript
+nodemon --harmony app localhost 3000
+```
+
 
 <b>为什么使用log4js</b>  ? 其前身是log4j， 历史悠久， 质量有保证， 并且提供各种日志打印方式及保存方案。
 
