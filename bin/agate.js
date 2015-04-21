@@ -107,35 +107,57 @@ program
 program
         .command('start [port] [url]')
         .description('输入一个端口号(没有默认为3000), 并且通过默认浏览器打开该面')
-        .action(function (port, url) {
+        .action(function (port, url, env) {
             port = isFinite(port) ? parseFloat(port) : 3000
             url = url || "http://localhost:"
+            env = {
+                "prod": "production",
+                "production": "production",
+                "undefined": "development",
+                "dev": "development",
+                "development": "development",
+                "test": "test"
+            }[env]
 
             //process.execPath 相当于 "C:\\Program Files\\nodejs\\node.exe"
             //http://www.cnblogs.com/xiziyin/p/3578905.html
-          
-            var ls = spawn(process.execPath,
-                    ["--harmony", path.join(rootPath, 'app.js'), "port=" + port, "url=" + url], {
-                stdio: 'inherit',
-                cwd: rootPath
-            })
+
+            switch (env) {
+                case "development": //cluster
+                    spawn(process.execPath,
+                            [path.join(rootPath, "node_modules/nodemon/bin/nodemon"), "--harmony", path.join(rootPath, 'app.js'), "localhost", port, "port=" + port, "url=" + url], {
+                             stdio: 'inherit',
+                             cwd: rootPath
+                    })
+                    break
+                case  "test":
+                    break
+                case "production": //执行cluster.js
+                    break
+            }
+
+//            var ls = spawn(process.execPath,
+//                    ["--harmony", path.join(rootPath, 'app.js'), "port=" + port, "url=" + url], {
+//                stdio: 'inherit',
+//                cwd: rootPath
+//            })
 
             var open = require("open");
             open(url + port);
         })
-        
-        program
+
+program
         .command('pm2')
         .description('通过pm2模块执行APP')
- .action(function () {
-     
-   //https://github.com/Unitech/PM2/issues/887
-        spawn(process.execPath, 
-                    [path.join(rootPath, "node_modules/pm2/bin/pm2"),"start", path.join(rootPath, 'config', "pm2.json")], {
+        .action(function () {
+
+            //https://github.com/Unitech/PM2/issues/887
+            spawn(process.execPath,
+                    [path.join(rootPath, "node_modules/pm2/bin/pm2"), "start", path.join(rootPath, 'config', "pm2.json")], {
                 stdio: 'inherit',
                 cwd: rootPath
             })
- })
+        })
 
 program.parse(process.argv)
 
