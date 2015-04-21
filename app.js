@@ -7,7 +7,6 @@ var http = require("http")
 app.keys = ['secret', 'key']; //https://github.com/koajs/koa/issues/203
 var session = require('koa-session')
 app.use(session(app))
-console.log("++++++++++")
 
 //============设置静态资源缓存==============
 //处理public目录下的js, css, jpg, png , ttf, woff， eot, otf, svg文件

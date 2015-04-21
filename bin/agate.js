@@ -110,14 +110,14 @@ program
         .action(function (port, url, env) {
             port = isFinite(port) ? parseFloat(port) : 3000
             url = url || "http://localhost:"
-            env = {
+            var map = {
                 "prod": "production",
                 "production": "production",
-                "undefined": "development",
                 "dev": "development",
                 "development": "development",
                 "test": "test"
-            }[env]
+            }
+            env = map[env] || "development"
 
             //process.execPath 相当于 "C:\\Program Files\\nodejs\\node.exe"
             //http://www.cnblogs.com/xiziyin/p/3578905.html
@@ -129,6 +129,7 @@ program
                              stdio: 'inherit',
                              cwd: rootPath
                     })
+                    console.log("++++++++++")
                     break
                 case  "test":
                     break
