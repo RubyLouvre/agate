@@ -191,3 +191,11 @@ void function(){
     app.listen(port)
     console.log("已经启动" + url + port)
 }()
+/*
+我们自己写了一个WEB管理控制台，deamon用的是cluster模式实现的，还写了一点IPC通信，
+这样登录后台可以看到各子进程的PID、工作状态、内存占用、数据库连接占用、连接排队、
+HTTP会话数、TCP会话数、Cache使用率、Cache命中率等，管理控制台还记录了
+每个业务模块的调用次数及调用耗时用于性能调优，deamon进程使用node-schedule
+每10分钟记录一次子进程服务状态同时生成监控页面再通过shell汇总和压缩。
+https://cnodejs.org/topic/51cc49e973c638f37042f7b4
+*/

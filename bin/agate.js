@@ -123,25 +123,31 @@ program
             //http://www.cnblogs.com/xiziyin/p/3578905.html
 
             switch (env) {
-                case "development": //cluster
+                case "development": //热启动
                     spawn(process.execPath,
                             [path.join(rootPath, "node_modules/nodemon/bin/nodemon"), "--harmony", path.join(rootPath, 'app.js'), "localhost", port, "port=" + port, "url=" + url], {
-                             stdio: 'inherit',
-                             cwd: rootPath
+                        stdio: 'inherit',
+                        cwd: rootPath
                     })
-                    console.log("++++++++++")
+
                     break
                 case  "test":
+                    spawn(process.execPath,
+                            ["--harmony", path.join(rootPath, 'server.js'), "port=" + port, "url=" + url], {
+                        stdio: 'inherit',
+                        cwd: rootPath
+                    })
                     break
-                case "production": //执行cluster.js
+                case "production": //多线程
+                    spawn(process.execPath,
+                            ["--harmony", path.join(rootPath, 'server.js'), "port=" + port, "url=" + url], {
+                        stdio: 'inherit',
+                        cwd: rootPath
+                    })
                     break
             }
 
-//            var ls = spawn(process.execPath,
-//                    ["--harmony", path.join(rootPath, 'app.js'), "port=" + port, "url=" + url], {
-//                stdio: 'inherit',
-//                cwd: rootPath
-//            })
+
 
             var open = require("open");
             open(url + port);
