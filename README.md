@@ -23,7 +23,7 @@ koa是基于generator与co之上的新一代的中间件框架, 代表着历史�
 ├──server.js
 ├──app
 │　　├──layouts
-│    │     └──layout1.html
+│    │    └──layout1.html
 │　　└──pages
 │           ├──home
 │           │     ├──controller.js
@@ -49,52 +49,27 @@ koa是基于generator与co之上的新一代的中间件框架, 代表着历史�
 http://www.veryhuo.com/a/view/39755.html
 
 
+## 启动命令
+```
+agate start 3000 '' prod
+agate start 3000 '' test
+agate start 3000 '' dev
+```
 
-
-<b>为什么使用pm2</b>  ? 最牛的监控平台，集成多线程及热启动技术。
-
-如果你在启动时报以下错误
+## 脚手架命令
 ```javascript
-D:\agate>pm2 start app --node-args="--harmony"
-fs.js:751
-  return binding.mkdir(pathModule._makeLong(path),
-                 ^
-Error: ENOENT, no such file or directory 'D:\Users\qincheng.zhong.QUNARSERVERS\.
-pm2'
+node --harmony agate 
 ```
-那么你应该建立`D:\Users\qincheng.zhong.QUNARSERVERS\.pm2`目录就可以了
+
+##直接启动命令
 ```javascript
-D:\agate>mkdir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
-
-D:\agate>dir D:\Users\qincheng.zhong.QUNARSERVERS\.pm2
-```
-https://doesnotscale.com/deploying-node-js-with-pm2-and-nginx/
-然后运行`pm2 start app --node-args="--harmony"`（你不需要再运行node app --harmony） 
-![image](https://cloud.githubusercontent.com/assets/190846/7040248/8ed8d2ca-ddff-11e4-8868-2c0c16b95549.png)
-
-
-当然我们也可以用配置方式json启动pm2
-
-```javascript
-//需要跑到config目录下
-$ pm2 start pm2.json
-$ pm2 stop pm2.json
-$ pm2 delete pm2.json
-$ pm2 restart pm2.json
+agate agate scaffold /test2 test2  index post#create
 ```
 
-pm2.json在window下不能使用监控功能watch
-配置方式不时会出问题,实在不行,还是换回命令行方式
-```
-pm2 start app --node-args="--harmony" --name "kkk" --watch
-```
--i 好像不怎么好用
 
 在开发环境使用 nodemon, 在生产环境使用pm2
 //http://ourjs.com/detail/52456ae04cd0e14503000009
-```javascript
-nodemon --harmony app localhost 3000
-```
+
 
 
 <b>为什么使用log4js</b>  ? 其前身是log4j， 历史悠久， 质量有保证， 并且提供各种日志打印方式及保存方案。
@@ -162,11 +137,3 @@ routes["get /xxxx"] = {
 更多教程，当你启动本工程后，首页就是教程首页。然后你再将routes中的路由规则重设首页，添加你自己的页面！
 
 
-主要命令
-```javascript
-pm2 start app --node-args="--harmony" --name "kkk" --watch 
-agate start 4000
-agate agate scaffold /test2 test2  index post#create
-node --harmony 4000
-
-```
