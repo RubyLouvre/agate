@@ -105,11 +105,11 @@ program
 });
 
 program
-        .command('start [port] [url]')
+        .command('start [port] [url] [env]')
         .description('输入一个端口号(没有默认为3000), 并且通过默认浏览器打开该面')
         .action(function (port, url, env) {
             port = isFinite(port) ? parseFloat(port) : 3000
-            url = url || "http://localhost:"
+            url = /http|localhost/.test(url) ? url : "http://localhost:"
             var map = {
                 "prod": "production",
                 "production": "production",
@@ -118,10 +118,8 @@ program
                 "test": "test"
             }
             env = map[env] || "development"
-
             //process.execPath 相当于 "C:\\Program Files\\nodejs\\node.exe"
             //http://www.cnblogs.com/xiziyin/p/3578905.html
-
             switch (env) {
                 case "development": //热启动
                     spawn(process.execPath,
@@ -146,8 +144,6 @@ program
                     })
                     break
             }
-
-
 
             var open = require("open");
             open(url + port);
