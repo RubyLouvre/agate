@@ -1,6 +1,6 @@
 {
     "name": "agate",
-    "script": "app.js",
+    "script": "agate.js",
     "cwd": "D:/agate",
     "node_args": "--harmony",
     "instances": 2

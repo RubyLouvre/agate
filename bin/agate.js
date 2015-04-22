@@ -128,7 +128,7 @@ program
             switch (env) {
                 case "development": //热启动
                     spawn(process.execPath,
-                            [path.join(rootPath, "node_modules/nodemon/bin/nodemon"), "--harmony", path.join(rootPath, 'app.js'), "localhost", port, "port=" + port, "url=" + url], {
+                            [path.join(rootPath, "node_modules/nodemon/bin/nodemon"), "--harmony", path.join(rootPath, 'agate.js'), "localhost", port, "port=" + port, "url=" + url], {
                         stdio: 'inherit',
                         cwd: rootPath
                     })
@@ -177,18 +177,30 @@ program
             })
         })
 
-//        program
-//        .command('stop [port]')
-//        .description('关掉')
-//        .action(function (port) {
-//            
-//            http.request({
-//                host:host + ':' + port,
-//                method: get
-//            })
-//
-//          
-//        })
+program
+        .command('stop')
+        .description('关掉')
+        .action(function (port) {
+
+
+            var port = 7543;
+            var options = {
+                host: 'localhost',
+                port: port,
+                path: '/shutdown',
+                method: 'GET'
+            };
+            var http = require('http')
+            http.request(options, function (res) {
+                console.log('STATUS: ' + res.statusCode);
+                var buf = [];
+                res.on('data', buf.push.bind(buf)).on('end', function () {
+                    console.log(Buffer.concat(buf).toString());
+                });
+            }).end();
+
+
+        })
 
 program.parse(process.argv)
 
