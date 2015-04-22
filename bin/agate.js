@@ -148,9 +148,11 @@ program
                     })
                     break
             }
-
-            var open = require("open");
-            open(url + port);
+            setTimeout(function(){
+                 var open = require("open")
+                 open(url + port)
+            }, 0)
+           
         }).on('--help', function () {
     console.log('参数:')
     console.log()
