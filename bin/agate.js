@@ -93,20 +93,25 @@ program
         }).on('--help', function () {
     console.log('参数:');
     console.log();
-    console.log('%s\t  后跟路由规则，如%s，它会添加在config/routes.json下', color.bold('rule'), color.cyan('page\\:pageId'));
+    console.log('%s\t  后跟路由规则，如%s，它会添加在config/routes.json下',
+            color.bold('rule'), color.cyan('page\\:pageId'));
     console.log('%s后跟控制器的名字，不能有非法字符, 如topic', color.bold('controller'))
     console.log('它会在app/pages目录下建topic目录，再建一个controller.js');
     console.log('%s\t  后面重复跟N个%s ，如%s', color.bold('actions'), color.green('请求名#action名'),
             color.cyan('get#index get#about post#create'));
-    console.log('此外get请求名默认可省略，相当于%s 有多少action就会建多少个相名空页面', color.cyan('index about post#create'));
+    console.log('此外get请求名默认可省略，相当于%s 有多少action就会建多少个相名空页面',
+            color.cyan('index about post#create'));
     console.log('一个完整的命令如下');
     console.log(color.cyan('agate scaffold page\\:pageId topic index about post#create'));
     console.log();
 });
 
+
+
+
 program
         .command('start [port] [url] [env]')
-        .description('输入一个端口号(没有默认为3000), 并且通过默认浏览器打开该面')
+        .description('启动服务器, 并通过默认浏览器打开该面')
         .action(function (port, url, env) {
             port = isFinite(port) ? parseFloat(port) : 3000
             url = /http|localhost/.test(url) ? url : "http://localhost:"
@@ -127,7 +132,6 @@ program
                         stdio: 'inherit',
                         cwd: rootPath
                     })
-
                     break
                 case  "test":
                     spawn(process.execPath,
@@ -147,8 +151,19 @@ program
 
             var open = require("open");
             open(url + port);
-        })
-
+        }).on('--help', function () {
+    console.log('参数:')
+    console.log()
+    console.log('%s\t  端口号, 默认是%f', color.bold('port'), color.cyan('4000'));
+    console.log('%s\t  URL地址, 必须是http/https开头或者是localhost, 默认是http://localhost', color.bold('url'))
+    console.log('%s\t  工作环境, 可以是test, dev, prod, development, production, 默认是development', color.bold('env'))
+    console.log('一个完整的命令如下');
+    console.log(color.cyan('agate start 8888 "" prod'))
+    console.log()
+    console.log("    在开发环境中，是通过nodemon进行文件监控，如果文件发动改动，会自动重启服务器")
+    console.log("    在测试与生产环境中，是cluster模块启动多个线程（线程数视CPU核心决定），如果服务器挂掉，会自动重启服务器");
+    console.log("但在10秒内连续重启60次，就认为是严重故障，不再重启了");
+})
 program
         .command('pm2')
         .description('通过pm2模块执行APP')
@@ -161,6 +176,19 @@ program
                 cwd: rootPath
             })
         })
+
+//        program
+//        .command('stop [port]')
+//        .description('关掉')
+//        .action(function (port) {
+//            
+//            http.request({
+//                host:host + ':' + port,
+//                method: get
+//            })
+//
+//          
+//        })
 
 program.parse(process.argv)
 
