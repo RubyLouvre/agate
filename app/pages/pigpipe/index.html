@@ -3,6 +3,7 @@ index
 https://github.com/koajs/bigpipe-example/tree/master/client
 https://gemnasium.com/npms/bigpipe-example
 http://www.jianshu.com/p/12cfa4ba29d4
+https://github.com/undoZen/bigpipe-on-node
 The whole point is to split big task of generating entire HTML into many small tasks ( aka pagelets ). For example assume you want to send to a browser two things: user details and details of a transaction he just made. Instead of doing both these tasks ( ie loading data from DB ) and sending HTML after that, you would load a user from DB an send it to browser, then load transaction from DB and send it to browser.
 
 This ultimetly leads to a better user experience and faster loading time ( because browser generates HTML chunk by chunk which is more efficient then everything at once ).
