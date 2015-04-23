@@ -1,0 +1,29 @@
+<h2>过滤器</h2>
+<p>它在其他语言也叫做View Helpers。 由于是使用ejs， 因此下面的定义或用法，都是符合ejs filters的规格。</p>
+<p>在ejs里面默认提供了如下过滤器， 详见<a href="https://github.com/tj/ejs">这里</a></p>
+<ul class="task-list">
+    <li>first 对数组第一个元素</li>
+    <li>last 对数组最后一个元素</li>
+    <li>capitalize 首字母大写</li>
+    <li>downcase 字母全部小写</li>
+    <li>upcase 字母全部大写</li>
+    <li>sort 对数组进行排序</li>
+    <li>sort_by:'prop'  对对象数组按某个属性进行排序</li>
+    <li>size 取得数组或字符串的长度</li>
+    <li>length 同上</li>
+    <li>plus:n</li>
+    <li>minus:n</li>
+    <li>times:n</li>
+    <li>divided_by:n</li>
+    <li>join:'val'</li>
+    <li>truncate:n</li>
+    <li>truncate_words:n</li>
+    <li>replace:pattern,substitution</li>
+    <li>prepend:val</li>
+    <li>append:val</li>
+    <li>map:'prop'</li>
+    <li>reverse</li>
+    <li>get:'prop'</li>
+</ul>
+<p>但光是这个是不够用的，因此config目录下有一个filters文件，专门用于定义全局都使用的视图过滤器。
+    现在只添加了一个我们去哪儿网用到的qzzUrl过滤器</p>

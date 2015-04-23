@@ -77,7 +77,7 @@ program
                     //添加action对应的空页面
                     newActions.forEach(function (action) {
                         fs.writeFile(path.join(rootPath, "app", "pages", controller, action + ".html"),
-                                "", {
+                                action, {
                                     encoding: "utf8",
                                     flag: "a+"
                                 },
