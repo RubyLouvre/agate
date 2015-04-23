@@ -28,6 +28,10 @@ exports["ejs"] =  function *(next) {
    yield this.render("doc/ejs")
 }
 
+exports["momeryleak"] =  function *(next) {
+   yield this.render("doc/momeryleak")
+}
+
 exports["static"] =  function *(next) {
    yield this.render("doc/static")
 }

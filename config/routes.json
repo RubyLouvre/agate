@@ -15,5 +15,6 @@
 	"get /static": "doc static",
 	"get /user": "doc-session user",
 	"get /xxx": "home index",
-	"post /login": "doc-session login"
+	"post /login": "doc-session login",
+        "get /momeryleak": "doc momeryleak"
 }
