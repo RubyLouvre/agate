@@ -39,7 +39,7 @@ if (cluster.isMaster) {
                 for(var i in workers){
                     workers[i].worker.disconnect()
                 }
-                worker.disconnect()
+
                 process.exit(0);
             }, 0);
         } else {
