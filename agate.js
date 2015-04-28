@@ -45,48 +45,6 @@ render(app, {
                 // locals: locals,
                 // filters: filters
 });
-//============设置错误处理=============
-//https://github.com/koajs/onerror/blob/master/index.js
-app.use(function*(next) {
-        try {
-                yield next;
-        } catch (err) {
-                if (!(err instanceof Error)) {
-                        var old = JSON.stringify(err)
-                        err = {
-                                stack: "内部抛出非Error类型的错误信息，无法追踪其位置",
-                                name: "TypeError",
-                                message: old,
-                                status: 500
-                        }
-                }
-                log4js.getLogger("error").error(err.stack)
-                        // delegate
-                this.app.emit('error', err, this);
-                // nothing we can do here other
-                // than delegate to the app-level
-                // handler and log.
-                if (this.headerSent || !this.writable) {
-                        err.headerSent = true;
-                        return;
-                }
-
-                // ENOENT support
-                if ('ENOENT' === err.code) {
-                        err.status = 404;
-                }
-
-                if ('number' !== typeof err.status || !http.STATUS_CODES[err.status]) {
-                        err.status = 500;
-                }
-                this.status = err.status;
-                yield this.render('error', {
-                        name: err.name,
-                        message: err.message,
-                        stack: err.stack
-                });
-        }
-})
 
 
 app.use(function*(next) {
@@ -149,6 +107,7 @@ Object.keys(routes).forEach(function(key) {
 
 app.use(router.routes())
 app.use(router.allowedMethods());
+//============设置错误处理=============
 app.on("error", function(err, ctx) {
         //https://github.com/koajs/examples/issues/20
         console.log("捕获到错误")
