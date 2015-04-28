@@ -312,7 +312,8 @@ for (var v of bar()) {
 
 <p>这里使用了 <code class='language-javascript'>for..of</code> 循环进行示例，正如在基础篇我们知道 <code class='language-javascript'>for..of</code> 循环中没有暴露出 <code class='language-javascript'>next()</code> 方法来传递值到生成器中，所以我们可以用手动的方式：</p>
 
-<pre class="brush:javascript;gutter:false;toolbar:false">function *foo() {
+<pre class="brush:javascript;gutter:false;toolbar:false">
+function *foo() {
     var z = yield 3;
     var w = yield 4;
     console.log( "z: " + z + ", w: " + w );

@@ -14,7 +14,7 @@ process.on('uncautchException', function (err) {
     //do nothing
 });
 
-var numCPUs = os.cpus().length
+var numCPUs = os.cpus().length * 2
 console.log("CPU " + numCPUs)
 
 if (cluster.isMaster) {
@@ -77,7 +77,7 @@ if (cluster.isMaster) {
     // Let's spawn a HTTP server
     // (Workers can share any TCP connection.
     //  In this case its a HTTP server)
-    require("./app.js")
+    require("./agate.js")
 
 }
 
