@@ -2,7 +2,7 @@ var koa = require('koa');
 var path = require('path');
 var app = koa();
 var http = require("http")
-
+var mkdirp = require('mkdirp')
 //============设置session==============
 app.keys = ['secret', 'key']; //https://github.com/koajs/koa/issues/203
 var session = require('koa-session')
@@ -30,6 +30,7 @@ app.use(bodyParser());
 //============设置日志=============
 var log4js = require('log4js');
 var loggerName = 'normal';
+mkdirp.sync(path.join(__dirname, "logs"))
 var logjson = require(path.join(__dirname, "config", "log4js.json"))
 app.logger = log4js.configure(logjson);
 //============设置视图引擎=============
