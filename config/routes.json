@@ -1,5 +1,6 @@
 {
 	"get /": "doc index",
+	"get /bigpipe": "bigpipe index",
 	"get /cacti": "doc cacti",
 	"get /cookie": "doc cookie",
 	"get /doc": "doc index",
@@ -12,7 +13,6 @@
 	"get /login": "doc-session login",
 	"get /logout": "doc-session logout",
 	"get /momeryleak": "doc momeryleak",
-	"get /pigpipe": "pigpipe index",
 	"get /sessionother": "doc-session other",
 	"get /static": "doc static",
 	"get /user": "doc-session user",

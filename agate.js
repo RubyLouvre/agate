@@ -110,7 +110,8 @@ app.use(router.allowedMethods());
 //============设置错误处理=============
 app.on("error", function(err, ctx) {
         //https://github.com/koajs/examples/issues/20
-        console.log("捕获到错误")
+        console.log("捕获到错误"+err)
+        console.log(err.stack)
 })
 
 
