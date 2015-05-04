@@ -23,7 +23,7 @@
             "category": "record"
         }
     ],
-    "replaceConsole": true,
+    "replaceConsole": false,
     "levels": {
         "error": "error",
         "record": "trace"
