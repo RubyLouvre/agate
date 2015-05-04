@@ -63,7 +63,6 @@ if (cluster.isMaster) {
             console.error('panic')
             return process.exit(1)
         }
-        console.error('disconnect!')
         delete workers[worker.id]
         var newWorker = cluster.fork() //respawn
         workers[newWorker.id] = {
@@ -77,7 +76,7 @@ if (cluster.isMaster) {
     // Let's spawn a HTTP server
     // (Workers can share any TCP connection.
     //  In this case its a HTTP server)
-    require("./agate.js")
+    require("./worker.js")
 
 }
 

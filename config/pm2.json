@@ -1,8 +1,0 @@
-{
-    "name": "agate",
-    "script": "agate.js",
-    "cwd": "D:/agate",
-    "node_args": "--harmony",
-    "instances": 2
-
-}

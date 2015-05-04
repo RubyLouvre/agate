@@ -7,7 +7,7 @@ var mkdirp = require('mkdirp')
 app.keys = ['secret', 'key']; //https://github.com/koajs/koa/issues/203
 var session = require('koa-session')
 app.use(session(app))
-
+global.app = app
 //============设置静态资源缓存==============
 //处理public目录下的js, css, jpg, png , ttf, woff， eot, otf, svg文件
 var staticCache = require('koa-static-cache')
@@ -34,6 +34,13 @@ mkdirp.sync(path.join(__dirname, "logs"))
 var logjson = require(path.join(__dirname, "config", "log4js.json"))
 app.logger = log4js.configure(logjson);
 //============设置视图引擎=============
+
+app.layoutPath = path.join(__dirname, "app", "layout")
+app.getLayout = function(name){
+    return require("fs").readFileSync(path.join(app.layoutPath, name), "utf8")
+}
+
+
 var render = require('koa-ejs');
 var filters = require(path.join(__dirname, "config", "filters"))
 render(app, {

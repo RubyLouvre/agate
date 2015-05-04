@@ -127,21 +127,23 @@ program
             switch (env) {
                 case "development": //热启动
                     spawn(process.execPath,
-                            [path.join(rootPath, "node_modules/nodemon/bin/nodemon"), "--harmony", path.join(rootPath, 'agate.js'), "localhost", port, "port=" + port, "url=" + url], {
+                            [path.join(rootPath, "node_modules/nodemon/bin/nodemon"), 
+                                "--harmony", path.join(rootPath, 'worker.js'), 
+                                "localhost", port, "port=" + port, "url=" + url], {
                         stdio: 'inherit',
                         cwd: rootPath
                     })
                     break
                 case  "test":
                     spawn(process.execPath,
-                            ["--harmony", path.join(rootPath, 'server.js'), "port=" + port, "url=" + url], {
+                            ["--harmony", path.join(rootPath, 'master.js'), "port=" + port, "url=" + url], {
                         stdio: 'inherit',
                         cwd: rootPath
                     })
                     break
                 case "production": //多线程
                     spawn(process.execPath,
-                            ["--harmony", path.join(rootPath, 'server.js'), "port=" + port, "url=" + url], {
+                            ["--harmony", path.join(rootPath, 'master.js'), "port=" + port, "url=" + url], {
                         stdio: 'inherit',
                         cwd: rootPath
                     })
@@ -165,25 +167,12 @@ program
     console.log("    在测试与生产环境中，是cluster模块启动多个线程（线程数视CPU核心决定），如果服务器挂掉，会自动重启服务器");
     console.log("但在10秒内连续重启60次，就认为是严重故障，不再重启了");
 })
-program
-        .command('pm2')
-        .description('通过pm2模块执行APP')
-        .action(function () {
 
-            //https://github.com/Unitech/PM2/issues/887
-            spawn(process.execPath,
-                    [path.join(rootPath, "node_modules/pm2/bin/pm2"), "start", path.join(rootPath, 'config', "pm2.json")], {
-                stdio: 'inherit',
-                cwd: rootPath
-            })
-        })
 
 program
         .command('stop')
         .description('关掉')
         .action(function (port) {
-
-
             var port = 7543;
             var options = {
                 host: 'localhost',
