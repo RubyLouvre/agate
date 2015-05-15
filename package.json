@@ -1,12 +1,12 @@
 {
-  "name": "agate",
+  "name": "agatejs",
   "description": "qunar hotel node framework.",
   "repository": {
     "type": "git",
     "url": "https://github.com/RubyLouvre/agate.git"
   },
-  "main": "app.js",
-  "author": "RuubyLouvre <1669866773@qq.com>",
+  "main": "master.js",
+  "author": "RubyLouvre <1669866773@qq.com>",
   "version": "0.0.1",
   "keywords": [
     "koa",
