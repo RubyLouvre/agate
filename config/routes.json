@@ -13,6 +13,7 @@
 	"get /login": "doc-session login",
 	"get /logout": "doc-session logout",
 	"get /momeryleak": "doc momeryleak",
+	"get /node": "node index",
 	"get /sessionother": "doc-session other",
 	"get /static": "doc static",
 	"get /user": "doc-session user",
