@@ -61,7 +61,7 @@ agate start 3000 '' dev
 node --harmony agate 
 ```
 
-##直接启动命令
+## 直接启动命令
 ```javascript
 agate agate scaffold /test2 test2  index post#create
 ```
